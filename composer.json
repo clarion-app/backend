@@ -1,0 +1,27 @@
+{
+    "name": "metaverse-systems/clarion-setup",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "MetaverseSystems\\ClarionSetup\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Tim Schwartz",
+            "email": "tim@metaverse.systems"
+        }
+    ],
+    "require": {
+        "illuminate/support": "^10.2",
+        "metaverse-systems/docker-php-client": "dev-main"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "MetaverseSystems\\ClarionSetup\\ClarionSetupServiceProvider"
+            ]
+        }
+    }
+}
