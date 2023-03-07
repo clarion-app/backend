@@ -3,8 +3,8 @@
 namespace ClarionApp\ClarionSetup\Commands;
 
 use Illuminate\Console\Command;
-use ClarionApp\DockerPhpClient\Facades\DockerClient;
-use ClarionApp\DockerPhpClient\Containers\HostConfig;
+use MetaverseSystems\DockerPhpClient\Facades\DockerClient;
+use MetaverseSystems\DockerPhpClient\Containers\HostConfig;
 
 class SetupMariaDB extends Command
 {

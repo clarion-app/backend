@@ -44,6 +44,8 @@ class SetupClarion extends Command
             ]);
         }
 
+        Artisan::call('clarion:setup-node-id');
         Artisan::call('clarion:setup-db');
+        Artisan::call('clarion:setup-multichain');
     }
 }
