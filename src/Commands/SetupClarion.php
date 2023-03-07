@@ -4,6 +4,7 @@ namespace ClarionApp\ClarionSetup\Commands;
 
 use Illuminate\Console\Command;
 use Artisan;
+use MetaverseSystems\DockerPhpClient\Facades\DockerClient;
 
 class SetupClarion extends Command
 {
@@ -26,26 +27,19 @@ class SetupClarion extends Command
      */
     public function handle(): void
     {
-        if(!file_exists(config_path('docker-php-client.php')))
-        {
-            Artisan::call('vendor:publish', [
-                '--provider' => 'MetaverseSystems\DockerPhpClient\DockerPhpClientProvider',
-                '--force' => true,
-                '--tag' => 'config'
-            ]);
-        }
+        $srv_dir = "";
 
-        if(!file_exists(config_path('multichain.php')))
+        $containers = DockerClient::containers();
+        foreach($containers as $container)
         {
-            Artisan::call('vendor:publish', [
-                '--provider' => 'MetaverseSystems\MultiChain\MultiChainProvider',
-                '--force' => true,
-                '--tag' => 'config'
-            ]);
+            foreach($container->Mounts as $mount)
+            {
+                if($mount->Destination == "/srv") $srv_dir = $mount->Source;
+            }
         }
 
         Artisan::call('clarion:setup-node-id');
-        Artisan::call('clarion:setup-db');
+        Artisan::call('clarion:setup-db', ["srv"=>$srv_dir ]);
         Artisan::call('clarion:setup-multichain');
     }
 }

@@ -13,7 +13,7 @@ class SetupMariaDB extends Command
      *
      * @var string
      */
-    protected $signature = 'clarion:setup-db';
+    protected $signature = 'clarion:setup-db {srv}';
 
     /**
      * The console command description.
@@ -27,7 +27,7 @@ class SetupMariaDB extends Command
      */
     public function handle(): void
     {
-        $sockdir = "/var/run/mysqld";
+        $sockdir = $this->argument("srv");
 
         DockerClient::image_create("mariadb:latest");
 
