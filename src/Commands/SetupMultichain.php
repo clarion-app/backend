@@ -13,7 +13,7 @@ class SetupMultichain extends Command
      *
      * @var string
      */
-    protected $signature = 'clarion:setup-multichain';
+    protected $signature = 'clarion:setup-multichain {chain-name}';
 
     /**
      * The console command description.
@@ -28,18 +28,20 @@ class SetupMultichain extends Command
     public function handle(): void
     {
         $image_name = "metaversesystems/multichain:latest";
+        $chain_name = $this->argument("chain-name");
 
         $rpc_port = "12000";
         $network_port = "12001";
         $rpc_user = "multichainrpc";
         $rpc_password = uniqid();
 
+        // Download latest image
         DockerClient::image_create($image_name);
 
-        $container = DockerClient::container_new("clarion-chain");
+        $container = DockerClient::container_new($chain_name);
         $container->Image = $image_name;
         $container->Env = array(
-            "CHAIN_NAME=clarion-chain",
+            "CHAIN_NAME=$chain_name",
             "RPC_PASSWORD=$rpc_password"
         );
         $container->HostConfig = new HostConfig(array(
@@ -55,7 +57,7 @@ class SetupMultichain extends Command
         $container->save();
         $container->start();
 
-        $container = DockerClient::container("clarion-chain");
+        $container = DockerClient::container($chain_name);
         $rpc_host = $container->NetworkSettings->Networks->bridge->IPAddress;
 
         $env = file_get_contents(base_path(".env"));
