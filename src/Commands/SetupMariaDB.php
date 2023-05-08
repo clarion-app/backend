@@ -34,13 +34,13 @@ class SetupMariaDB extends Command
 
         exec("/etc/init.d/mysql stop && /usr/sbin/mysqld --skip-grant-tables --skip-networking &");
         exec("mysql -u root -e 'FLUSH PRIVELEGES'");
-        $password_query = "SET PASSWORD FOR root@\'localhost\' = PASSWORD(\'$root_password\');"
+        $password_query = "SET PASSWORD FOR root@\\'localhost\\' = PASSWORD(\\'$root_password\\');"
         $password_command = "mysql -u root -e '$password_query'";
         print $password_command."\n";
         exec($password_command);
         exec("kill %1 && /etc/init.d/mysql start");
         exec("mysql -u root -e 'CREATE DATABASE clarion'");
-        $password_command = "GRANT ALL ON clarion.* TO \'clarion\'@\'localhost\' IDENTIFIED BY \'$db_password\';";
+        $password_command = "GRANT ALL ON clarion.* TO \\'clarion\\'@\\'localhost\\' IDENTIFIED BY \\'$db_password\\';";
         print $password_command."\n";
         exec($password_command);
 
