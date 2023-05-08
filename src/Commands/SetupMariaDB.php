@@ -4,7 +4,7 @@ namespace ClarionApp\ClarionSetup\Commands;
 
 use Illuminate\Console\Command;
 use MetaverseSystems\DockerPhpClient\Facades\DockerClient;
-use MetaverseSystems\DockerPhpClient\Containers\HostConfig;
+use Artisan;
 
 class SetupMariaDB extends Command
 {
@@ -13,7 +13,7 @@ class SetupMariaDB extends Command
      *
      * @var string
      */
-    protected $signature = 'clarion:setup-db {srv}';
+    protected $signature = 'clarion:setup-db';
 
     /**
      * The console command description.
@@ -27,28 +27,22 @@ class SetupMariaDB extends Command
      */
     public function handle(): void
     {
-        $sockdir = $this->argument("srv");
-
-        DockerClient::image_create("mariadb:latest");
+        $socket = "/var/run/mysqld/mysqld.sock";
 
         $db_password = uniqid();
         $root_password = uniqid();
 
-        $container = DockerClient::container_new("clarion-db");
-        $container->Image = "mariadb:latest";
-        $container->Env = array(
-            "MARIADB_DATABASE=clarion",
-            "MARIADB_USER=clarion",
-            "MARIADB_PASSWORD=$db_password",
-            "MARIADB_ROOT_PASSWORD=$root_password"
-        );
-        $container->HostConfig = new HostConfig(array(
-          "Mounts"=>array(
-              array("Type"=>"bind", "Source"=>$sockdir, "Target"=>"/var/run/mysqld")
-          )
-        ));
-        $container->Cmd = array("mysqld");
-        $container->save();
+        exec("/etc/init.d/mysql stop && /usr/sbin/mysqld --skip-grant-tables --skip-networking &");
+        exec("mysql -u root -e 'FLUSH PRIVELEGES'");
+        $password_query = "SET PASSWORD FOR root@\'localhost\' = PASSWORD(\'$root_password\');"
+        $password_command = "mysql -u root -e '$password_query'";
+        print $password_command."\n";
+        exec($password_command);
+        exec("kill %1 && /etc/init.d/mysql start");
+        exec("mysql -u root -e 'CREATE DATABASE clarion'");
+        $password_command = "GRANT ALL ON clarion.* TO \'clarion\'@\'localhost\' IDENTIFIED BY \'$db_password\';";
+        print $password_command."\n";
+        exec($password_command);
 
         $env = file_get_contents(base_path(".env"));
         $lines = explode("\n", $env);
@@ -64,14 +58,23 @@ class SetupMariaDB extends Command
         }
 
         array_push($lines, "DB_CONNECTION=mysql");
-        array_push($lines, "DB_SOCKET=/var/run/mysqld/mysqld.sock");
+
+        config(["database.connections.mysql.unix_socket"=>$socket]);
+        array_push($lines, "DB_SOCKET=$socket");
+
+        config(["database.connections.mysql.database"=>"clarion"]);
         array_push($lines, "DB_DATABASE=clarion");
+
+        config(["database.connections.mysql.username"=>"clarion"]);
         array_push($lines, "DB_USERNAME=clarion");
+
+        config(["database.connections.mysql.password"=>$db_password]);
         array_push($lines, "DB_PASSWORD=$db_password");
 
         $env = implode("\n", $lines);
         file_put_contents(base_path(".env"), $env);
 
-        $container->start();
+        sleep(5);
+        Artisan::call('migrate');
     }
 }
