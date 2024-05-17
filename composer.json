@@ -14,7 +14,7 @@
         }
     ],
     "require": {
-        "illuminate/support": "^10.2",
+        "illuminate/support": "^11.0",
         "metaverse-systems/docker-php-client": "dev-main",
         "metaverse-systems/eloquent-multichain-bridge": "dev-main"
     },

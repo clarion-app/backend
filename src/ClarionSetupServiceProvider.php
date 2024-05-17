@@ -8,6 +8,7 @@ use ClarionApp\ClarionSetup\Commands\SetupMariaDB;
 use ClarionApp\ClarionSetup\Commands\SetupMultichain;
 use ClarionApp\ClarionSetup\Commands\SetupNodeID;
 use ClarionApp\ClarionSetup\Commands\BlockNotify;
+use ClarionApp\ClarionSetup\Commands\RebuildClarionRoutes;
 
 class ClarionSetupServiceProvider extends ServiceProvider
 {
@@ -21,7 +22,8 @@ class ClarionSetupServiceProvider extends ServiceProvider
             SetupMariaDB::class,
             SetupMultichain::class,
             SetupNodeID::class,
-            BlockNotify::class
+            BlockNotify::class,
+            RebuildClarionRoutes::class
         ]);
     }
 
