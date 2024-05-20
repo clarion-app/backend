@@ -19,17 +19,17 @@ class SupervisorManager
     public function createSupervisorConfig()
     {
         $config = "[supervisord]
-        logfile={$this->configPath}/supervisord.log ; main log file
-        pidfile={$this->configPath}/supervisord.pid ; pid file location
-        
-        [unix_http_server]
-        file={$this->configPath}/supervisor.sock ; path to the socket file
-        
-        [supervisorctl]
-        serverurl=unix://{$this->configPath}/supervisor.sock ; use a unix:// URL for a unix socket
-        
-        [include]
-        files = {$this->configPath}/conf.d/*.conf
+logfile={$this->configPath}/supervisord.log ; main log file
+pidfile={$this->configPath}/supervisord.pid ; pid file location
+
+[unix_http_server]
+file={$this->configPath}/supervisor.sock ; path to the socket file
+
+[supervisorctl]
+serverurl=unix://{$this->configPath}/supervisor.sock ; use a unix:// URL for a unix socket
+
+[include]
+files = {$this->configPath}/conf.d/*.conf
 ";
         file_put_contents("{$this->configPath}/supervisord.conf", $config);
     }        
