@@ -1,25 +1,25 @@
 <?php
 
-namespace ClarionApp\ClarionSetup\Commands;
+namespace ClarionApp\Backend\Commands;
 
 use Illuminate\Console\Command;
 use Artisan;
 
-class RebuildClarionRoutes extends Command
+class RebuildFrontendRoutes extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'clarion:routes-rebuild {directory}';
+    protected $signature = 'clarion:frontend-routes-rebuild {directory}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'description';
+    protected $description = 'Rebuild ClarionRoutes.tsx in frontend directory.';
 
     /**
      * Execute the console command.

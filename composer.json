@@ -1,10 +1,10 @@
 {
-    "name": "clarion-app/clarion-setup",
+    "name": "clarion-app/backend",
     "type": "library",
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "ClarionApp\\ClarionSetup\\": "src/"
+            "ClarionApp\\Backend\\": "src/"
         }
     },
     "authors": [
@@ -21,7 +21,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "ClarionApp\\ClarionSetup\\ClarionSetupServiceProvider"
+                "ClarionApp\\Backend\\ClarionBackendServiceProvider"
             ]
         }
     },

@@ -1,16 +1,16 @@
 <?php
 
-namespace ClarionApp\ClarionSetup;
+namespace ClarionApp\Backend;
 
 use Illuminate\Support\ServiceProvider;
-use ClarionApp\ClarionSetup\Commands\SetupClarion;
-use ClarionApp\ClarionSetup\Commands\SetupMariaDB;
-use ClarionApp\ClarionSetup\Commands\SetupMultichain;
-use ClarionApp\ClarionSetup\Commands\SetupNodeID;
-use ClarionApp\ClarionSetup\Commands\BlockNotify;
-use ClarionApp\ClarionSetup\Commands\RebuildClarionRoutes;
+use ClarionApp\Backend\Commands\SetupClarion;
+use ClarionApp\Backend\Commands\SetupMariaDB;
+use ClarionApp\Backend\Commands\SetupMultichain;
+use ClarionApp\Backend\Commands\SetupNodeID;
+use ClarionApp\Backend\Commands\BlockNotify;
+use ClarionApp\Backend\Commands\RebuildFrontendRoutes;
 
-class ClarionSetupServiceProvider extends ServiceProvider
+class ClarionBackendServiceProvider extends ServiceProvider
 {
     /**
      * Register services.
@@ -23,7 +23,7 @@ class ClarionSetupServiceProvider extends ServiceProvider
             SetupMultichain::class,
             SetupNodeID::class,
             BlockNotify::class,
-            RebuildClarionRoutes::class
+            RebuildFrontendRoutes::class
         ]);
     }
 

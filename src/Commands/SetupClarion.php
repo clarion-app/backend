@@ -1,6 +1,6 @@
 <?php
 
-namespace ClarionApp\ClarionSetup\Commands;
+namespace ClarionApp\Backend\Commands;
 
 use Illuminate\Console\Command;
 use Artisan;
