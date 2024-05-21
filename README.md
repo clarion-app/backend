@@ -1,1 +1,1 @@
-# clarion-app/clarion-setup
+# clarion-app/backend
