@@ -1,6 +1,8 @@
 <?php
 namespace ClarionApp\Backend;
 
+use Illuminate\Support\Facades\Process;
+
 class SupervisorManager
 {
     protected $configPath;
@@ -8,11 +10,14 @@ class SupervisorManager
     public function __construct()
     {
         $this->configPath = storage_path('supervisor');
-        if (!file_exists($this->configPath)) {
-            mkdir($this->configPath, 0755, true);
-        }
-        if(!file_exists("{$this->configPath}/conf.d")) {
-            mkdir("{$this->configPath}/conf.d", 0755, true);
+        $this->ensureDirectoryExists($this->configPath);
+        $this->ensureDirectoryExists("{$this->configPath}/conf.d");
+    }
+
+    protected function ensureDirectoryExists($path)
+    {
+        if (!file_exists($path)) {
+            mkdir($path, 0755, true);
         }
     }
 
@@ -32,29 +37,16 @@ serverurl=unix://{$this->configPath}/supervisor.sock ; use a unix:// URL for a u
 files = {$this->configPath}/conf.d/*.conf
 ";
         file_put_contents("{$this->configPath}/supervisord.conf", $config);
-    }        
-
-    public function createConfig($queueName, $numProcs = 1)
-    {
-        // get system username
-        $username = exec('whoami');
-        $artisanPath = base_path('artisan');
-        $logsPath = storage_path('logs');
-        $config = "[program:laravel-worker-{$queueName}]
-process_name=%(program_name)s_%(process_num)02d
-command=php {$artisanPath} queue:work --queue={$queueName} --sleep=3 --tries=3
-autostart=true
-autorestart=true
-user={$username}
-numprocs={$numProcs}
-redirect_stderr=true
-stdout_logfile={$logsPath}/laravel-worker-{$queueName}.log";
-        file_put_contents("{$this->configPath}/conf.d/laravel-worker-{$queueName}.conf", $config);
     }
 
-    public function removeConfig($queueName)
+    public function createConfig($programName, $config)
     {
-        $configPath = "{$this->configPath}/conf.d/laravel-worker-{$queueName}.conf";
+        file_put_contents("{$this->configPath}/conf.d/{$programName}.conf", $config);
+    }
+
+    public function removeConfig($programName)
+    {
+        $configPath = "{$this->configPath}/conf.d/{$programName}.conf";
         if (file_exists($configPath)) {
             unlink($configPath);
         }
@@ -62,7 +54,7 @@ stdout_logfile={$logsPath}/laravel-worker-{$queueName}.log";
 
     public function getConfigs()
     {
-        return array_diff(scandir($this->configPath."/conf.d"), ['.', '..']);
+        return array_diff(scandir($this->configPath . "/conf.d"), ['.', '..']);
     }
 
     public function reloadSupervisor()
@@ -71,18 +63,18 @@ stdout_logfile={$logsPath}/laravel-worker-{$queueName}.log";
         Process::run("supervisorctl -c {$this->configPath}/supervisord.conf update");
     }
 
-    public function startWorker($queueName)
+    public function startProgram($programName)
     {
-        Process::run("supervisorctl -c {$this->configPath}/supervisord.conf start laravel-worker-{$queueName}:*");
+        Process::run("supervisorctl -c {$this->configPath}/supervisord.conf start {$programName}:*");
     }
 
-    public function stopWorker($queueName)
+    public function stopProgram($programName)
     {
-        Process::run("supervisorctl -c {$this->configPath}/supervisord.conf stop laravel-worker-{$queueName}:*");
+        Process::run("supervisorctl -c {$this->configPath}/supervisord.conf stop {$programName}:*");
     }
 
-    public function restartWorker($queueName)
+    public function restartProgram($programName)
     {
-        Process::run("supervisorctl -c {$this->configPath}/supervisord.conf restart laravel-worker-{$queueName}:*");
+        Process::run("supervisorctl -c {$this->configPath}/supervisord.conf restart {$programName}:*");
     }
 }
