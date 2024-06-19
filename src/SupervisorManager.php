@@ -77,4 +77,20 @@ files = {$this->configPath}/conf.d/*.conf
     {
         Process::run("supervisorctl -c {$this->configPath}/supervisord.conf restart {$programName}:*");
     }
+
+    public function startSupervisord()
+    {
+        Process::run("supervisord -c {$this->configPath}/supervisord.conf");
+    }
+
+    public function stopSupervisord()
+    {
+        Process::run("supervisorctl -c {$this->configPath}/supervisord.conf shutdown");
+    }
+
+    public function isSupervisordRunning()
+    {
+        $result = Process::run("supervisorctl -c {$this->configPath}/supervisord.conf status");
+        return $result->successful();
+    }
 }
