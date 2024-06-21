@@ -9,6 +9,7 @@ use ClarionApp\Backend\Commands\SetupMultichain;
 use ClarionApp\Backend\Commands\SetupNodeID;
 use ClarionApp\Backend\Commands\BlockNotify;
 use ClarionApp\Backend\Commands\RebuildFrontendRoutes;
+use ClarionApp\Backend\Models\User;
 
 class ClarionBackendServiceProvider extends ServiceProvider
 {
@@ -32,6 +33,15 @@ class ClarionBackendServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        config(['auth.providers.users.model' => User::class]);
+        $guards = config('auth.guards');
+            $guards['api'] = [
+                'driver' => 'passport',
+                'provider' => 'users',
+                'hash' => false
+            ];
+        config(['auth.guards'=>$guards]);
+
         if(!$this->app->routesAreCached())
         {
             require __DIR__.'/Routes.php';
