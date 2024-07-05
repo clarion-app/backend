@@ -6,7 +6,7 @@ use Spatie\Permission\Traits\HasRoles;
 use MetaverseSystems\EloquentMultiChainBridge\EloquentMultiChainBridge;
 use Laravel\Passport\HasApiTokens;
 
-class User extends App\Models\User
+class User extends \App\Models\User
 {
     use EloquentMultiChainBridge, HasApiTokens, HasRoles, SoftDeletes;
 }

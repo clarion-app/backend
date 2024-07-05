@@ -8,7 +8,7 @@ Route::get('/Description.xml', function() {
 <root xmlns="urn:schemas-upnp-org:device-1-0">
   <device>
     <deviceType>urn:schemas-upnp-org:device:Basic:1</deviceType>
-    <presentationURL><?=env('APP_URL') ?></presentationURL>
+    <presentationURL><?=env('FRONTEND_URL') ?></presentationURL>
     <friendlyName>Clarion</friendlyName>
     <manufacturer>Metaverse Systems</manufacturer>
     <manufacturerURL>https://metaverse.systems/</manufacturerURL>
