@@ -15,6 +15,7 @@ class ComposerController extends Controller
         $package = $request->input('package');
 
         // Execute the composer require command and restart the queue worker after installation.
+        chdir($path);
         app()->make(Composer::class)->run(['require', $package]);
 
         //$output = shell_exec("cd $path; composer require $package");
@@ -27,8 +28,9 @@ class ComposerController extends Controller
     {
         $path = base_path();
         $package = $request->input('package');
-        $output = shell_exec("cd $path; composer remove $package");
-        $output .= shell_exec("cd $path; php artisan queue:restart");
+        chdir($path);
+        app()->make(Composer::class)->run(['remove', $package]);
+        $output = shell_exec("cd $path; php artisan queue:restart");
         return response()->json(['output' => $output]);
     }
 }
