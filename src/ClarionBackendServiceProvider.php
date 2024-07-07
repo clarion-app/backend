@@ -49,7 +49,7 @@ class ClarionBackendServiceProvider extends ServiceProvider
 
         $this->publishes([
             __DIR__.'/../config/config.php' => config_path('clarion.php'),
-        ], 'config');
+        ], 'clarion-config');
 
 
         $this->app->booted(function () {
