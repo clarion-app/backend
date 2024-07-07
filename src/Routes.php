@@ -21,3 +21,6 @@ Route::get('/Description.xml', function() {
 </root>
 <?php
 });
+
+Route::post('/api/composer/install', 'ClarionApp\Backend\Controllers\ComposerController@install');
+Route::post('/api/composer/uninstall', 'ClarionApp\Backend\Controllers\ComposerController@uninstall');
