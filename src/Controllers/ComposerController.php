@@ -13,6 +13,7 @@ class ComposerController extends Controller
         $path = base_path();
         $package = $request->input('package');
         $output = shell_exec("cd $path; composer require $package");
+        $output .= shell_exec("cd $path; php artisan migrate");
         $output .= shell_exec("cd $path; php artisan queue:restart");
         return response()->json(['output' => $output]);
     }
