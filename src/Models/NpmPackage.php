@@ -5,7 +5,7 @@ namespace ClarionApp\Backend\Models;
 use Illuminate\Database\Eloquent\Model;
 use MetaverseSystems\EloquentMultiChainBridge\EloquentMultiChainBridge;
 
-class NPMPackage extends Model
+class NpmPackage extends Model
 {
     use EloquentMultiChainBridge;
 

@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Log;
 use ClarionApp\Backend\Composer;
 use ClarionApp\Backend\Models\ComposerPackage;
 use ClarionApp\Backend\Models\AppPackage;
+use ClarionApp\Backend\Models\NpmPackage;
 use ClarionApp\Backend\Events\InstallNPMPackageEvent;
 use ClarionApp\Backend\Events\UninstallNPMPackageEvent;
 
