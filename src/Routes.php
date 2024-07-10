@@ -1,6 +1,8 @@
 <?php
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use ClarionApp\Backend\Controllers\ComposerController;
+use ClarionApp\Backend\Controllers\AppController;
 
 Route::get('/Description.xml', function() {
 ?>
@@ -22,5 +24,9 @@ Route::get('/Description.xml', function() {
 <?php
 });
 
-Route::post('/api/composer/install', 'ClarionApp\Backend\Controllers\ComposerController@install');
-Route::post('/api/composer/uninstall', 'ClarionApp\Backend\Controllers\ComposerController@uninstall');
+Route::post('/api/composer/install', [ComposerController::class, 'install']);
+Route::post('/api/composer/uninstall', [ComposerController::class, 'uninstall']);
+
+Route::post('/api/app/install', [AppController::class, 'install']);
+Route::post('/api/app/uninstall', [AppController::class, 'uninstall']);
+Route::get('/api/app', [AppController::class, 'index']);

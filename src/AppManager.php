@@ -16,7 +16,8 @@ class AppManager
         Log::info(print_r($packageData, 1));
 
         $app = AppPackage::where('organization', $org)->where('name', $name)->first();
-        if(!$app) {
+        if(!$app)
+        {
             $app = AppPackage::create([
                 'organization' => $org,
                 'name' => $name,
@@ -26,17 +27,19 @@ class AppManager
             ]);
         }
 
-        if($app->installed) {
+        if($app->installed)
+        {
             return "App already installed";
         }
 
         foreach($packageData->composerPackages as $composerPackage)
         {
-            $this->composerInstall($composerPackage->package, $app->id);
+            Log::info("Installing $composerPackage");
+            $this->composerInstall($composerPackage, $app->id);
         }
     }
 
-    public function composerInstall($package, $app_id = null)
+    public function composerInstall($package, $app_id = "0")
     {
         $path = base_path();
         chdir($path);
@@ -47,7 +50,7 @@ class AppManager
         return $output;
     }
 
-    public function composerUninstall($package, $app_id = null)
+    public function composerUninstall($package, $app_id = "0")
     {
         $path = base_path();
         chdir($path);
@@ -63,9 +66,12 @@ class AppManager
         $composerPackage = ComposerPackage::where('organization', $org)->where('name', $name)->first();
         $path = base_path('vendor/'.$package.'/composer.json');
         $installed = file_exists($path);
-        if ($composerPackage) {
+        if ($composerPackage)
+        {
             $composerPackage->update(['installed' => $installed]);
-        } else {
+        }
+        else
+        {
             ComposerPackage::create([
                 'organization' => $org,
                 'name' => $name,
