@@ -49,14 +49,14 @@ class AppManager
 
     public function npmInstall($package, $app_id = "0")
     {
-        event(new InstallNPMPackageEvent($npmPackage));
-        $this->updateNpmPackageTable($npmPackage, $app_id);
+        event(new InstallNPMPackageEvent($package));
+        $this->updateNpmPackageTable($package, $app_id);
     }
 
     public function npmUninstall($package, $app_id = "0")
     {
-        event(new UninstallNPMPackageEvent($npmPackage));
-        $this->updateNpmPackageTable($npmPackage, $app_id);
+        event(new UninstallNPMPackageEvent($package));
+        $this->updateNpmPackageTable($package, $app_id);
     }
 
     public function updateNpmPackageTable($package, $app_id)
