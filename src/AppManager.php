@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Log;
 use ClarionApp\Backend\Composer;
 use ClarionApp\Backend\Models\ComposerPackage;
 use ClarionApp\Backend\Models\AppPackage;
+use ClarionApp\Backend\Events\InstallNPMPackageEvent;
+use ClarionApp\Backend\Events\UninstallNPMPackageEvent;
 
 class AppManager
 {
@@ -36,6 +38,43 @@ class AppManager
         {
             Log::info("Installing $composerPackage");
             $this->composerInstall($composerPackage, $app->id);
+        }
+
+        foreach($packageData->npmPackages as $npmPackage)
+        {
+            Log::info("Installing $npmPackage");
+        }
+    }
+
+    public function npmInstall($package, $app_id = "0")
+    {
+        event(new InstallNPMPackageEvent($npmPackage));
+        $this->updateNpmPackageTable($npmPackage, $app_id);
+    }
+
+    public function npmUninstall($package, $app_id = "0")
+    {
+        event(new UninstallNPMPackageEvent($npmPackage));
+        $this->updateNpmPackageTable($npmPackage, $app_id);
+    }
+
+    public function updateNpmPackageTable($package, $app_id)
+    {
+        [$org, $name] = explode('/', $package);
+        $npmPackage = NpmPackage::where('organization', $org)->where('name', $name)->first();
+        $installed = $app_id != "0" ? true : false;
+        if ($npmPackage)
+        {
+            $npmPackage->update(['installed' => $installed]);
+        }
+        else
+        {
+            NpmPackage::create([
+                'organization' => $org,
+                'name' => $name,
+                'installed' => $installed,
+                'app_id' => $app_id
+            ]);
         }
     }
 
