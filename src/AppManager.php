@@ -43,6 +43,7 @@ class AppManager
         foreach($packageData->npmPackages as $npmPackage)
         {
             Log::info("Installing $npmPackage");
+            $this->npmInstall($npmPackage, $app->id);
         }
     }
 
