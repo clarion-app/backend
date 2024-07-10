@@ -8,7 +8,6 @@ use ClarionApp\Backend\Commands\SetupMariaDB;
 use ClarionApp\Backend\Commands\SetupMultichain;
 use ClarionApp\Backend\Commands\SetupNodeID;
 use ClarionApp\Backend\Commands\BlockNotify;
-use ClarionApp\Backend\Commands\RebuildFrontendRoutes;
 use ClarionApp\Backend\Models\User;
 
 class ClarionBackendServiceProvider extends ServiceProvider
@@ -24,7 +23,6 @@ class ClarionBackendServiceProvider extends ServiceProvider
             SetupMultichain::class,
             SetupNodeID::class,
             BlockNotify::class,
-            RebuildFrontendRoutes::class
         ]);
     }
 
@@ -33,6 +31,8 @@ class ClarionBackendServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $this->loadMigrationsFrom(__DIR__.'/Migrations');
+        
         config(['auth.providers.users.model' => User::class]);
         $guards = config('auth.guards');
             $guards['api'] = [
