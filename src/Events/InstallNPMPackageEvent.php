@@ -5,7 +5,7 @@ namespace ClarionApp\Backend\Events;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Broadcasting\Channel;
 
 class InstallNPMPackageEvent
 {
@@ -21,7 +21,7 @@ class InstallNPMPackageEvent
     public function broadcastOn()
     {
         return [
-            new PrivateChannel('clarion-apps'),
+            new Channel('clarion-apps'),
         ];
     }
 }
