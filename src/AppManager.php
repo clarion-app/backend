@@ -62,13 +62,15 @@ class AppManager
             return "App already uninstalled";
         }
 
-        foreach($app->npmPackages as $npmPackage)
+        $npmPackages = NpmPackage::where('app_id', $app->id)->get();
+        foreach($npmPackages as $npmPackage)
         {
             Log::info("Uninstalling $npmPackage->organization/$npmPackage->name");
             $this->npmUninstall($npmPackage->organization.'/'.$npmPackage->name);
         }
 
-        foreach($app->composerPackages as $composerPackage)
+        $composerPackages = ComposerPackage::where('app_id', $app->id)->get();
+        foreach($composerPackages as $composerPackage)
         {
             Log::info("Uninstalling $composerPackage->organization/$composerPackage->name");
             $this->composerUninstall($composerPackage->organization.'/'.$composerPackage->name);
