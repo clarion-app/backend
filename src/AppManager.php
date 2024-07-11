@@ -135,6 +135,7 @@ class AppManager
         $composer->run(['remove', $package]);
         //$output = shell_exec("cd $path; /usr/local/bin/composer remove $package");
         $output = shell_exec("cd $path; php artisan queue:restart");
+        [$org, $name] = explode('/', $package);
         $composerPackage = ComposerPackage::where('organization', $org)->where('name', $name)->first();
         $composerPackage->delete();
         return $output;
