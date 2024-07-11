@@ -85,10 +85,11 @@ class AppManager
         $this->updateNpmPackageTable($package, $app_id);
     }
 
-    public function npmUninstall($package, $app_id = "0")
+    public function npmUninstall($package)
     {
         event(new UninstallNPMPackageEvent($package));
-        $this->updateNpmPackageTable($package, $app_id);
+        $npmPackage = NpmPackage::where('organization', $org)->where('name', $name)->first();
+        $npmPackage->delete();
     }
 
     public function updateNpmPackageTable($package, $app_id)
@@ -133,7 +134,8 @@ class AppManager
         $composer->run('remove', [$package]);
         //$output = shell_exec("cd $path; /usr/local/bin/composer remove $package");
         $output = shell_exec("cd $path; php artisan queue:restart");
-        $this->updateComposerPackageTable($package, $app_id);
+        $composerPackage = ComposerPackage::where('organization', $org)->where('name', $name)->first();
+        $composerPackage->delete();
         return $output;
     }
 
