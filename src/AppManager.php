@@ -117,7 +117,7 @@ class AppManager
         $path = base_path();
         chdir($path);
         $composer = app(Composer::class);
-        $composer->run('require', [$package]);
+        $composer->run(['require', $package]);
         //$output = shell_exec("cd $path; /usr/local/bin/composer require $package");
         $output = shell_exec("cd $path; php artisan migrate");
         $output .= shell_exec("cd $path; php artisan queue:restart");
@@ -131,7 +131,7 @@ class AppManager
         $path = base_path();
         chdir($path);
         $composer = app(Composer::class);
-        $composer->run('remove', [$package]);
+        $composer->run(['remove', $package]);
         //$output = shell_exec("cd $path; /usr/local/bin/composer remove $package");
         $output = shell_exec("cd $path; php artisan queue:restart");
         $composerPackage = ComposerPackage::where('organization', $org)->where('name', $name)->first();
