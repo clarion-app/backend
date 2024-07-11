@@ -5,9 +5,10 @@ namespace ClarionApp\Backend\Events;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Broadcasting\Channel;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 
-class UninstallNPMPackageEvent
+class UninstallNPMPackageEvent implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -21,7 +22,7 @@ class UninstallNPMPackageEvent
     public function broadcastOn()
     {
         return [
-            new PrivateChannel('clarion-apps'),
+            new Channel('clarion-apps'),
         ];
     }
 }
