@@ -46,6 +46,8 @@ class AppManager
             Log::info("Installing $npmPackage");
             $this->npmInstall($npmPackage, $app->id);
         }
+
+        $app->update(['installed' => true]);
     }
 
     public function appUninstall($package)
