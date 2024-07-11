@@ -48,6 +48,35 @@ class AppManager
         }
     }
 
+    public function appUninstall($package)
+    {
+        [$org, $name] = explode('/', $package);
+        $app = AppPackage::where('organization', $org)->where('name', $name)->first();
+        if(!$app)
+        {
+            return "App not installed";
+        }
+
+        if(!$app->installed)
+        {
+            return "App already uninstalled";
+        }
+
+        foreach($app->npmPackages as $npmPackage)
+        {
+            Log::info("Uninstalling $npmPackage->organization/$npmPackage->name");
+            $this->npmUninstall($npmPackage->organization.'/'.$npmPackage->name);
+        }
+
+        foreach($app->composerPackages as $composerPackage)
+        {
+            Log::info("Uninstalling $composerPackage->organization/$composerPackage->name");
+            $this->composerUninstall($composerPackage->organization.'/'.$composerPackage->name);
+        }
+
+        $app->update(['installed' => false]);
+    }
+
     public function npmInstall($package, $app_id = "0")
     {
         event(new InstallNPMPackageEvent($package));
@@ -84,8 +113,10 @@ class AppManager
     {
         $path = base_path();
         chdir($path);
-        $output = shell_exec("cd $path; /usr/local/bin/composer require $package");
-        $output .= shell_exec("cd $path; php artisan migrate");
+        $composer = app(Composer::class);
+        $composer->run('require', [$package]);
+        //$output = shell_exec("cd $path; /usr/local/bin/composer require $package");
+        $output = shell_exec("cd $path; php artisan migrate");
         $output .= shell_exec("cd $path; php artisan queue:restart");
         Log::info($output);
         $this->updateComposerPackageTable($package, $app_id);
@@ -96,8 +127,10 @@ class AppManager
     {
         $path = base_path();
         chdir($path);
-        $output = shell_exec("cd $path; /usr/local/bin/composer remove $package");
-        $output .= shell_exec("cd $path; php artisan queue:restart");
+        $composer = app(Composer::class);
+        $composer->run('remove', [$package]);
+        //$output = shell_exec("cd $path; /usr/local/bin/composer remove $package");
+        $output = shell_exec("cd $path; php artisan queue:restart");
         $this->updateComposerPackageTable($package, $app_id);
         return $output;
     }
