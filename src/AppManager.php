@@ -88,6 +88,7 @@ class AppManager
     public function npmUninstall($package)
     {
         event(new UninstallNPMPackageEvent($package));
+        [$org, $name] = explode('/', $package);
         $npmPackage = NpmPackage::where('organization', $org)->where('name', $name)->first();
         $npmPackage->delete();
     }
