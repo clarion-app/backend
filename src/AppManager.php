@@ -127,7 +127,7 @@ class AppManager
         return $output;
     }
 
-    public function composerUninstall($package, $app_id = "0")
+    public function composerUninstall($package)
     {
         $path = base_path();
         chdir($path);
