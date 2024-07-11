@@ -87,6 +87,7 @@ class AppManager
         $output = shell_exec("cd $path; /usr/local/bin/composer require $package");
         $output .= shell_exec("cd $path; php artisan migrate");
         $output .= shell_exec("cd $path; php artisan queue:restart");
+        Log::info($output);
         $this->updateComposerPackageTable($package, $app_id);
         return $output;
     }
