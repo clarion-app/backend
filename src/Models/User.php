@@ -1,5 +1,5 @@
 <?php
-namespace ClarionApp\Backend;
+namespace ClarionApp\Backend\Models;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Permission\Traits\HasRoles;
