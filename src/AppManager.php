@@ -39,7 +39,7 @@ class AppManager
         foreach($packageData->npmPackages as $npmPackage)
         {
             Log::info("Installing $npmPackage");
-            $this->npmInstall($npmPackage, $app->id);
+         //   $this->npmInstall($npmPackage, $app->id);
         }
 
 
@@ -50,6 +50,7 @@ class AppManager
         }
 
         $app->update(['installed' => true]);
+        return $packageData->npmPackages;
     }
 
     public function appUninstall($package)
@@ -66,11 +67,13 @@ class AppManager
             return "App already uninstalled";
         }
 
+        $npmPackageList = [];
         $npmPackages = NpmPackage::where('app_id', $app->id)->get();
         foreach($npmPackages as $npmPackage)
         {
             Log::info("Uninstalling $npmPackage->organization/$npmPackage->name");
-            $this->npmUninstall($npmPackage->organization.'/'.$npmPackage->name);
+           // $this->npmUninstall($npmPackage->organization.'/'.$npmPackage->name);
+           array_push($npmPackageList, $npmPackage->organization.'/'.$npmPackage->name);
         }
 
         $composerPackages = ComposerPackage::where('app_id', $app->id)->get();
@@ -81,6 +84,7 @@ class AppManager
         }
 
         $app->update(['installed' => false]);
+        return $npmPackageList;
     }
 
     public function npmInstall($package, $app_id = "0")

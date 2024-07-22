@@ -48,12 +48,12 @@ class AppController extends Controller
     public function install(Request $request)
     {
         $output = $this->appManager->appInstall($request->input('package'));
-        return response()->json(['output' => $output]);
+        return response()->json($output);
     }
 
     public function uninstall(Request $request)
     {
         $output = $this->appManager->appUninstall($request->input('package'));
-        return response()->json(['output' => $output]);
+        return response()->json($output);
     }
 }
