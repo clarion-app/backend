@@ -20,22 +20,25 @@ class AppController extends Controller
     public function index()
     {
         $apps = json_decode(file_get_contents('https://store.clarion.app'));
-        $packageList = [];
+        $packageNames = [];
+        $packageOrgs = [];
         foreach($apps as &$app)
         {
-            $packageList[] = $app->package;
+            [$org, $name] = explode("/", $app->package);
+            $packageOrgs[] = $org;
+            $packageNames[] = $name;
         }
 
-        $installedApps = AppPackage::whereIn('name', $packageList)->get();
+        $installedApps = AppPackage::whereIn('organization', $packageOrgs)->whereIn('name', $packageNames)->where('installed', true)->get();
         foreach($apps as &$app)
         {
+            [$org, $name] = explode("/", $app->package);
             $app->installed = false;
             foreach($installedApps as $installedApp)
             {
-                if($installedApp->name == $app->package)
-                {
-                    $app->installed = true;
-                }
+                if($installedApp->organization != $org) continue;
+                if($installedApp->name != $name) continue;
+                $app->installed = true;
             }
         }
         

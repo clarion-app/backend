@@ -15,6 +15,7 @@ class AppManager
     {
         [$org, $name] = explode('/', $package);
         $url = "https://store.clarion.app/$package";
+        Log::info($url);
         $packageData = json_decode(file_get_contents($url));
         Log::info(print_r($packageData, 1));
 
@@ -35,16 +36,17 @@ class AppManager
             return "App already installed";
         }
 
-        foreach($packageData->composerPackages as $composerPackage)
-        {
-            Log::info("Installing $composerPackage");
-            $this->composerInstall($composerPackage, $app->id);
-        }
-
         foreach($packageData->npmPackages as $npmPackage)
         {
             Log::info("Installing $npmPackage");
             $this->npmInstall($npmPackage, $app->id);
+        }
+
+
+        foreach($packageData->composerPackages as $composerPackage)
+        {
+            Log::info("Installing $composerPackage");
+            $this->composerInstall($composerPackage, $app->id);
         }
 
         $app->update(['installed' => true]);
@@ -121,7 +123,7 @@ class AppManager
         chdir($path);
         $composer = app(Composer::class);
         $composer->run(['require', $package]);
-        //$output = shell_exec("cd $path; /usr/local/bin/composer require $package");
+        $output = shell_exec("cd $path; /usr/local/bin/composer require $package");
         $output = shell_exec("cd $path; php artisan migrate");
         $output .= shell_exec("cd $path; php artisan queue:restart");
         Log::info($output);
@@ -135,7 +137,7 @@ class AppManager
         chdir($path);
         $composer = app(Composer::class);
         $composer->run(['remove', $package]);
-        //$output = shell_exec("cd $path; /usr/local/bin/composer remove $package");
+        $output = shell_exec("cd $path; /usr/local/bin/composer remove $package");
         $output = shell_exec("cd $path; php artisan queue:restart");
         [$org, $name] = explode('/', $package);
         $composerPackage = ComposerPackage::where('organization', $org)->where('name', $name)->first();
