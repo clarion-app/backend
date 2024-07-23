@@ -3,6 +3,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use ClarionApp\Backend\Controllers\ComposerController;
 use ClarionApp\Backend\Controllers\AppController;
+use ClarionApp\Backend\Controllers\UserController;
 
 Route::get('/Description.xml', function() {
 ?>
@@ -30,3 +31,5 @@ Route::post('/api/composer/uninstall', [ComposerController::class, 'uninstall'])
 Route::post('/api/app/install', [AppController::class, 'install']);
 Route::post('/api/app/uninstall', [AppController::class, 'uninstall']);
 Route::get('/api/app', [AppController::class, 'index']);
+
+Route::resource('/api/user', UserController::class);
