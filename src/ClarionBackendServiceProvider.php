@@ -9,6 +9,7 @@ use ClarionApp\Backend\Commands\SetupMultichain;
 use ClarionApp\Backend\Commands\SetupNodeID;
 use ClarionApp\Backend\Commands\BlockNotify;
 use ClarionApp\Backend\Models\User;
+use ClarionApp\Backend\Controllers\UserController;
 
 class ClarionBackendServiceProvider extends ServiceProvider
 {
@@ -58,6 +59,9 @@ class ClarionBackendServiceProvider extends ServiceProvider
 <h1>Hello</h1>
 <?php
             })->middleware('web');
+
+            app('router')->get('/api/user', [UserController::class, "index"]);
+
         });
     }
 }

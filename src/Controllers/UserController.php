@@ -21,7 +21,7 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => 'required|string|min:8',
             'c_password' => 'required|same:password',
         ]);
 
@@ -31,7 +31,9 @@ class UserController extends Controller
         $user->password = Hash::make($request->password);
         $user->save();
 
-        return $user;
+        $token = $user->createToken(Str::random(80))->accessToken;
+
+        return response()->json(['user'=>$user, 'token' => $token]);
     }
 
     public function show($id)
@@ -65,6 +67,23 @@ class UserController extends Controller
         $user->delete();
 
         return response()->json(null, 204);
+    }
+
+    public function login(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|string|email|max:255',
+            'password' => 'required|string|min:8',
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+        $token = $user->createToken(Str::random(80))->accessToken;
+
+        return response()->json(['user'=>$user, 'token' => $token]);
     }
 }
 

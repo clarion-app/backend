@@ -25,11 +25,14 @@ Route::get('/Description.xml', function() {
 <?php
 });
 
-Route::post('/api/composer/install', [ComposerController::class, 'install']);
-Route::post('/api/composer/uninstall', [ComposerController::class, 'uninstall']);
+Route::group(['prefix'=>'api'], function () {
+    Route::post('composer/install', [ComposerController::class, 'install']);
+    Route::post('composer/uninstall', [ComposerController::class, 'uninstall']);
 
-Route::post('/api/app/install', [AppController::class, 'install']);
-Route::post('/api/app/uninstall', [AppController::class, 'uninstall']);
-Route::get('/api/app', [AppController::class, 'index']);
+    Route::post('app/install', [AppController::class, 'install']);
+    Route::post('app/uninstall', [AppController::class, 'uninstall']);
+    Route::get('app', [AppController::class, 'index']);
 
-Route::resource('/api/user', UserController::class);
+    Route::resource('user', UserController::class);
+    Route::post('user/login', [UserController::class, 'login']);
+});

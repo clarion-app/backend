@@ -16,7 +16,8 @@
     "require": {
         "metaverse-systems/docker-php-client": "dev-main",
         "metaverse-systems/eloquent-multichain-bridge": "dev-main",
-        "laravel/passport": "^12.2"
+        "laravel/passport": "^12.2",
+        "spatie/laravel-permission": "^6.0@dev"
     },
     "extra": {
         "laravel": {
