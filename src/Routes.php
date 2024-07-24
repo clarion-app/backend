@@ -25,7 +25,8 @@ Route::get('/Description.xml', function() {
 <?php
 });
 
-Route::group(['prefix'=>'api'], function () {
+Route::group(['prefix'=>'api', 'middleware'=>'api'], function () {
+  Route::group(['middleware' => 'auth:api'], function () {
     Route::post('composer/install', [ComposerController::class, 'install']);
     Route::post('composer/uninstall', [ComposerController::class, 'uninstall']);
 
@@ -34,5 +35,6 @@ Route::group(['prefix'=>'api'], function () {
     Route::get('app', [AppController::class, 'index']);
 
     Route::resource('user', UserController::class);
+  });
     Route::post('user/login', [UserController::class, 'login']);
 });
