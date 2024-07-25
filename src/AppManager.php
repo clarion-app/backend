@@ -39,7 +39,7 @@ class AppManager
         foreach($packageData->npmPackages as $npmPackage)
         {
             Log::info("Installing $npmPackage");
-         //   $this->npmInstall($npmPackage, $app->id);
+            $this->npmInstall($npmPackage, $app->id);
         }
 
 
@@ -72,8 +72,8 @@ class AppManager
         foreach($npmPackages as $npmPackage)
         {
             Log::info("Uninstalling $npmPackage->organization/$npmPackage->name");
-           // $this->npmUninstall($npmPackage->organization.'/'.$npmPackage->name);
-           array_push($npmPackageList, $npmPackage->organization.'/'.$npmPackage->name);
+            $this->npmUninstall($npmPackage->organization.'/'.$npmPackage->name);
+            array_push($npmPackageList, $npmPackage->organization.'/'.$npmPackage->name);
         }
 
         $composerPackages = ComposerPackage::where('app_id', $app->id)->get();
@@ -89,13 +89,13 @@ class AppManager
 
     public function npmInstall($package, $app_id = "0")
     {
-        event(new InstallNPMPackageEvent($package));
+        //event(new InstallNPMPackageEvent($package));
         $this->updateNpmPackageTable($package, $app_id);
     }
 
     public function npmUninstall($package)
     {
-        event(new UninstallNPMPackageEvent($package));
+        //event(new UninstallNPMPackageEvent($package));
         [$org, $name] = explode('/', $package);
         $npmPackage = NpmPackage::where('organization', $org)->where('name', $name)->first();
         $npmPackage->delete();
