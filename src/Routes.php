@@ -34,7 +34,8 @@ Route::group(['prefix'=>'api', 'middleware'=>'api'], function () {
     Route::post('app/uninstall', [AppController::class, 'uninstall']);
     Route::get('app', [AppController::class, 'index']);
 
-    Route::resource('user', UserController::class);
+    Route::resource('user', UserController::class)->except(['store']);
   });
+    Route::resource('user', UserController::class)->only(['store']);
     Route::post('user/login', [UserController::class, 'login']);
 });
