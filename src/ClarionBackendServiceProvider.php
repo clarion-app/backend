@@ -64,7 +64,7 @@ class ClarionBackendServiceProvider extends ServiceProvider
 <?php
             })->middleware('web');
 
-            app('router')->get('/api/user', [UserController::class, "index"]);
+            app('router')->get('/api/user', [UserController::class, "index"])->middleware('auth:api');
 
         });
     }

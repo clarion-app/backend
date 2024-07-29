@@ -11,6 +11,11 @@ use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
+    public function userExists()
+    {
+        return User::count() > 0;
+    }
+
     public function index()
     {
         return User::all();

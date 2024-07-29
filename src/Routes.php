@@ -25,17 +25,19 @@ Route::get('/Description.xml', function() {
 <?php
 });
 
-Route::group(['prefix'=>'api', 'middleware'=>'api'], function () {
-  Route::group(['middleware' => 'auth:api'], function () {
-    Route::post('composer/install', [ComposerController::class, 'install']);
-    Route::post('composer/uninstall', [ComposerController::class, 'uninstall']);
-
-    Route::post('app/install', [AppController::class, 'install']);
-    Route::post('app/uninstall', [AppController::class, 'uninstall']);
-    Route::get('app', [AppController::class, 'index']);
-
-    Route::resource('user', UserController::class)->except(['store']);
-  });
+Route::group(['prefix'=>'api/clarion/system', 'middleware'=>'api'], function () {
+    Route::get('user/exists', [UserController::class, 'userExists']);
     Route::resource('user', UserController::class)->only(['store']);
     Route::post('user/login', [UserController::class, 'login']);
+});
+
+Route::group(['prefix'=>'api/clarion/system', 'middleware' => 'auth:api'], function () {
+  Route::post('composer/install', [ComposerController::class, 'install']);
+  Route::post('composer/uninstall', [ComposerController::class, 'uninstall']);
+
+  Route::post('app/install', [AppController::class, 'install']);
+  Route::post('app/uninstall', [AppController::class, 'uninstall']);
+  Route::get('app', [AppController::class, 'index']);
+
+  Route::resource('user', UserController::class)->except(['store']);
 });
