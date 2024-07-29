@@ -43,6 +43,10 @@ class ClarionBackendServiceProvider extends ServiceProvider
             ];
         config(['auth.guards'=>$guards]);
 
+        $cors = config('cors.paths');
+        $cors[] = 'docs/api.json';
+        config(['cors.paths'=>$cors]);
+
         if(!$this->app->routesAreCached())
         {
             require __DIR__.'/Routes.php';
