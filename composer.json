@@ -14,11 +14,10 @@
         }
     ],
     "require": {
-        "metaverse-systems/docker-php-client": "dev-main",
-        "metaverse-systems/eloquent-multichain-bridge": "dev-main",
         "laravel/passport": "^12.2",
         "spatie/laravel-permission": "^6.0@dev",
-        "dedoc/scramble": "dev-main"
+        "dedoc/scramble": "dev-main",
+        "clarion-app/eloquent-multichain-bridge": "dev-main"
     },
     "extra": {
         "laravel": {
