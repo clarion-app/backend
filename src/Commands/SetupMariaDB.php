@@ -3,7 +3,6 @@
 namespace ClarionApp\Backend\Commands;
 
 use Illuminate\Console\Command;
-use MetaverseSystems\DockerPhpClient\Facades\DockerClient;
 use Artisan;
 
 class SetupMariaDB extends Command
@@ -20,7 +19,7 @@ class SetupMariaDB extends Command
      *
      * @var string
      */
-    protected $description = 'Sets up database docker container and configures .env';
+    protected $description = 'Sets up database and configures .env';
 
     /**
      * Execute the console command.

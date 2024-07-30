@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d65ca02d1c7cc8ff150d54512917606d",
+    "content-hash": "8f976c8fc55beabb837171239922bc10",
     "packages": [
         {
             "name": "brick/math",
@@ -184,6 +184,101 @@
                 "source": "https://github.com/clarion-app/eloquent-multichain-bridge/tree/main"
             },
             "time": "2024-07-30T02:28:23+00:00"
+        },
+        {
+            "name": "clarion-app/http-queue",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/clarion-app/http-queue.git",
+                "reference": "1fe31d0109480df30506da0ffecf766e9dbc2c63"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/clarion-app/http-queue/zipball/1fe31d0109480df30506da0ffecf766e9dbc2c63",
+                "reference": "1fe31d0109480df30506da0ffecf766e9dbc2c63",
+                "shasum": ""
+            },
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "ClarionApp\\HttpQueue\\HttpQueueServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "ClarionApp\\HttpQueue\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Tim Schwartz",
+                    "email": "tim@metaverse.systems"
+                }
+            ],
+            "description": "Job queue for HTTP requests",
+            "support": {
+                "issues": "https://github.com/clarion-app/http-queue/issues",
+                "source": "https://github.com/clarion-app/http-queue/tree/main"
+            },
+            "time": "2024-02-07T23:16:20+00:00"
+        },
+        {
+            "name": "clarion-app/llm-client",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/clarion-app/llm-client.git",
+                "reference": "d839a6a70646da0362ff0e51c326c309dd560e19"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/clarion-app/llm-client/zipball/d839a6a70646da0362ff0e51c326c309dd560e19",
+                "reference": "d839a6a70646da0362ff0e51c326c309dd560e19",
+                "shasum": ""
+            },
+            "require": {
+                "clarion-app/eloquent-multichain-bridge": "dev-main",
+                "clarion-app/http-queue": "dev-main",
+                "php-webdriver/webdriver": "dev-main"
+            },
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "ClarionApp\\LlmClient\\LlmClientServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "ClarionApp\\LlmClient\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Tim Schwartz",
+                    "email": "tim@metaverse.systems"
+                }
+            ],
+            "description": "Handles interactions with Large Language Models",
+            "support": {
+                "issues": "https://github.com/clarion-app/llm-client/issues",
+                "source": "https://github.com/clarion-app/llm-client/tree/main"
+            },
+            "time": "2024-07-30T13:41:54+00:00"
         },
         {
             "name": "clarion-app/multichain",
@@ -1234,12 +1329,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/console.git",
-                "reference": "896cc74364c8bc8ecd8adba98278a482c9626b73"
+                "reference": "5e62f816d1b361e8b7d7649b246b29a66669c462"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/console/zipball/896cc74364c8bc8ecd8adba98278a482c9626b73",
-                "reference": "896cc74364c8bc8ecd8adba98278a482c9626b73",
+                "url": "https://api.github.com/repos/illuminate/console/zipball/5e62f816d1b361e8b7d7649b246b29a66669c462",
+                "reference": "5e62f816d1b361e8b7d7649b246b29a66669c462",
                 "shasum": ""
             },
             "require": {
@@ -1292,7 +1387,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2024-07-15T21:52:09+00:00"
+            "time": "2024-07-30T07:04:41+00:00"
         },
         {
             "name": "illuminate/container",
@@ -1452,12 +1547,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/database.git",
-                "reference": "a65ad7f719458a670787078b5cd396c8694cabce"
+                "reference": "db151e9a3221705cb4149c39dce2c51799708637"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/database/zipball/a65ad7f719458a670787078b5cd396c8694cabce",
-                "reference": "a65ad7f719458a670787078b5cd396c8694cabce",
+                "url": "https://api.github.com/repos/illuminate/database/zipball/db151e9a3221705cb4149c39dce2c51799708637",
+                "reference": "db151e9a3221705cb4149c39dce2c51799708637",
                 "shasum": ""
             },
             "require": {
@@ -1512,7 +1607,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2024-07-29T07:28:57+00:00"
+            "time": "2024-07-30T07:00:12+00:00"
         },
         {
             "name": "illuminate/encryption",
@@ -1693,12 +1788,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/http.git",
-                "reference": "3d2866e56b2e96eef30589029e55ea5bf375084a"
+                "reference": "3d5f36f8fc06bd05b941b5868e61b915ee3d5340"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/http/zipball/3d2866e56b2e96eef30589029e55ea5bf375084a",
-                "reference": "3d2866e56b2e96eef30589029e55ea5bf375084a",
+                "url": "https://api.github.com/repos/illuminate/http/zipball/3d5f36f8fc06bd05b941b5868e61b915ee3d5340",
+                "reference": "3d5f36f8fc06bd05b941b5868e61b915ee3d5340",
                 "shasum": ""
             },
             "require": {
@@ -1746,7 +1841,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2024-07-22T14:33:35+00:00"
+            "time": "2024-07-30T06:57:53+00:00"
         },
         {
             "name": "illuminate/macroable",
@@ -1972,12 +2067,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/support.git",
-                "reference": "073ca028319cf322299cf8dfa73e1e1670cbae99"
+                "reference": "f3c19ee61d875dca1045df2d90000ae97f1645f9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/support/zipball/073ca028319cf322299cf8dfa73e1e1670cbae99",
-                "reference": "073ca028319cf322299cf8dfa73e1e1670cbae99",
+                "url": "https://api.github.com/repos/illuminate/support/zipball/f3c19ee61d875dca1045df2d90000ae97f1645f9",
+                "reference": "f3c19ee61d875dca1045df2d90000ae97f1645f9",
                 "shasum": ""
             },
             "require": {
@@ -2038,7 +2133,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2024-07-29T07:22:39+00:00"
+            "time": "2024-07-30T06:57:25+00:00"
         },
         {
             "name": "illuminate/view",
@@ -3198,6 +3293,73 @@
                 "source": "https://github.com/paragonie/random_compat"
             },
             "time": "2020-10-15T08:29:30+00:00"
+        },
+        {
+            "name": "php-webdriver/webdriver",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-webdriver/php-webdriver.git",
+                "reference": "11923b4ba312fc9d137266ae67438be65d4d500f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-webdriver/php-webdriver/zipball/11923b4ba312fc9d137266ae67438be65d4d500f",
+                "reference": "11923b4ba312fc9d137266ae67438be65d4d500f",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "ext-zip": "*",
+                "php": "^7.3 || ^8.0",
+                "symfony/polyfill-mbstring": "^1.12",
+                "symfony/process": "^5.0 || ^6.0 || ^7.0"
+            },
+            "replace": {
+                "facebook/webdriver": "*"
+            },
+            "require-dev": {
+                "ergebnis/composer-normalize": "^2.20.0",
+                "ondram/ci-detector": "^4.0",
+                "php-coveralls/php-coveralls": "^2.4",
+                "php-mock/php-mock-phpunit": "^2.0",
+                "php-parallel-lint/php-parallel-lint": "^1.2",
+                "phpunit/phpunit": "^9.3",
+                "squizlabs/php_codesniffer": "^3.5",
+                "symfony/var-dumper": "^5.0 || ^6.0 || ^7.0"
+            },
+            "suggest": {
+                "ext-SimpleXML": "For Firefox profile creation"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "lib/Exception/TimeoutException.php"
+                ],
+                "psr-4": {
+                    "Facebook\\WebDriver\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "A PHP client for Selenium WebDriver. Previously facebook/webdriver.",
+            "homepage": "https://github.com/php-webdriver/php-webdriver",
+            "keywords": [
+                "Chromedriver",
+                "geckodriver",
+                "php",
+                "selenium",
+                "webdriver"
+            ],
+            "support": {
+                "issues": "https://github.com/php-webdriver/php-webdriver/issues",
+                "source": "https://github.com/php-webdriver/php-webdriver/tree/main"
+            },
+            "time": "2024-04-26T16:49:05+00:00"
         },
         {
             "name": "phpseclib/phpseclib",
@@ -6241,7 +6403,8 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "spatie/laravel-permission": 20,
-        "dedoc/scramble": 20
+        "dedoc/scramble": 20,
+        "clarion-app/eloquent-multichain-bridge": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

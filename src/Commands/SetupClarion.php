@@ -4,7 +4,6 @@ namespace ClarionApp\Backend\Commands;
 
 use Illuminate\Console\Command;
 use Artisan;
-use MetaverseSystems\DockerPhpClient\Facades\DockerClient;
 
 class SetupClarion extends Command
 {

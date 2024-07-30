@@ -3,7 +3,7 @@
 namespace ClarionApp\Backend\Commands;
 
 use Illuminate\Console\Command;
-use MetaverseSystems\MultiChain\Facades\MultiChain;
+use ClarionApp\MultiChain\Facades\MultiChain;
 
 class BlockNotify extends Command
 {

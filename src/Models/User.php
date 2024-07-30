@@ -6,7 +6,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Permission\Traits\HasRoles;
-use MetaverseSystems\EloquentMultiChainBridge\EloquentMultiChainBridge;
+use ClarionApp\EloquentMultiChainBridge\EloquentMultiChainBridge;
 use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable

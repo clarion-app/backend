@@ -3,7 +3,7 @@
 namespace ClarionApp\Backend\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use MetaverseSystems\EloquentMultiChainBridge\EloquentMultiChainBridge;
+use ClarionApp\EloquentMultiChainBridge\EloquentMultiChainBridge;
 
 class AppPackage extends Model
 {
