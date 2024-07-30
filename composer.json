@@ -18,7 +18,8 @@
         "spatie/laravel-permission": "^6.0@dev",
         "dedoc/scramble": "dev-main",
         "clarion-app/eloquent-multichain-bridge": "dev-main",
-        "clarion-app/llm-client": "dev-main"
+        "clarion-app/llm-client": "dev-main",
+        "pusher/pusher-php-server": "^7.2"
     },
     "extra": {
         "laravel": {
