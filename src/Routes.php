@@ -25,7 +25,7 @@ Route::get('/Description.xml', function() {
       <service>
         <serviceType>urn:schemas-upnp-org:service:ConnectionManager:1</serviceType>
         <serviceId>urn:upnp-org:serviceId:ClarionConnectionManager</serviceId>
-        <controlURL>/api/clarion/network</controlURL>
+        <controlURL><?=config('app.url')?>/api/clarion/network</controlURL>
         <eventSubURL></eventSubURL>
       </service>
     </serviceList>
