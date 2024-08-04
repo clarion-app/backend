@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use ClarionApp\Backend\Controllers\ComposerController;
 use ClarionApp\Backend\Controllers\AppController;
 use ClarionApp\Backend\Controllers\UserController;
+use ClarionApp\Backend\Controllers\NetworkController;
 
 Route::get('/Description.xml', function() {
 ?>
@@ -20,6 +21,14 @@ Route::get('/Description.xml', function() {
     <modelURL>https://clarion.app</modelURL>
     <serialNumber><?=explode('-', config('clarion.node_id'))[4] ?></serialNumber>
     <UDN>uuid:<?=config('clarion.node_id') ?></UDN>
+    <serviceList>
+      <service>
+        <serviceType>urn:schemas-upnp-org:service:ConnectionManager:1</serviceType>
+        <serviceId>urn:upnp-org:serviceId:ClarionConnectionManager</serviceId>
+        <controlURL>/api/clarion/network</controlURL>
+        <eventSubURL></eventSubURL>
+      </service>
+    </serviceList>
   </device>
 </root>
 <?php
@@ -40,4 +49,8 @@ Route::group(['prefix'=>'api/clarion/system', 'middleware' => 'auth:api'], funct
   Route::get('app', [AppController::class, 'index']);
 
   Route::resource('user', UserController::class)->except(['store']);
+});
+
+Route::group(['prefix'=>'api/clarion/network', 'middleware'=>'api'], function () {
+  Route::post('/', [NetworkController::class, 'index']);
 });
