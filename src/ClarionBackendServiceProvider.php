@@ -7,6 +7,7 @@ use ClarionApp\Backend\Commands\SetupClarion;
 use ClarionApp\Backend\Commands\SetupMariaDB;
 use ClarionApp\Backend\Commands\SetupNodeID;
 use ClarionApp\Backend\Commands\BlockNotify;
+use ClarionApp\Backend\Commands\ClarionScan;
 use ClarionApp\Backend\Models\User;
 use ClarionApp\Backend\Controllers\UserController;
 
@@ -22,6 +23,7 @@ class ClarionBackendServiceProvider extends ServiceProvider
             SetupMariaDB::class,
             SetupNodeID::class,
             BlockNotify::class,
+            ClarionScan::class
         ]);
     }
 
