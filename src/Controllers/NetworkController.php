@@ -10,7 +10,8 @@ class NetworkController extends Controller
 {
     public function index(Request $request)
     {
-        [$action, $arguments] = $this->parseRequest($request);
+        $action = $request->input('action');
+        $arguments = $request->input('arguments');
         Log::info('NetworkController@index', ['action' => $action, 'arguments' => $arguments]);
     }
 }

@@ -4,6 +4,7 @@ namespace ClarionApp\Backend\Commands;
 
 use Illuminate\Console\Command;
 use ClarionApp\Backend\UPnPScanner;
+use stdClass;
 
 class ClarionScan extends Command
 {
@@ -26,15 +27,48 @@ class ClarionScan extends Command
         $scanner = new UPnPScanner();
         $devices = $scanner->discoverDevices();
         
+        $connectionManagers = [];
+
         foreach ($devices as $device)
         {
             $description = file_get_contents($device['Location']);
             $xml = simplexml_load_string($description);
-            if($xml->device->modelName != 'Clarion')
+
+            $found_connection_manager = false;
+            foreach($xml->device->serviceList->service as $service)
             {
-                continue;
+                print_r($service);
+                if($service->serviceType == 'urn:schemas-upnp-org:service:ConnectionManager:1')
+                {
+                    if($service->serviceId == 'urn:upnp-org:serviceId:ClarionConnectionManager')
+                    {
+                        $connectionManagers[] = (string)$service->controlURL;
+                    }
+                }
             }
-            print_r($xml);
         }
+
+        $this->info('Found ' . count($connectionManagers) . ' Clarion nodes on the network');
+        foreach($connectionManagers as $controlURL)
+        {
+            $this->info('Requesting access from ' . $controlURL);
+            $this->requestAccess($controlURL);
+        }
+    }
+
+    public function requestAccess($url)
+    {
+        $body = new stdClass;
+        $body->action = 'join_network';
+        $body->arguments = [
+            'node_id' => config('clarion.node_id'),
+            'backend_url' => config('app.url'),
+        ];
+
+        $client = new \GuzzleHttp\Client();
+        $response = $client->post($url, [
+            'json' => $body,
+        ]);
+
     }
 }
