@@ -8,13 +8,16 @@ use ClarionApp\Backend\Controllers\NetworkController;
 use ClarionApp\Backend\Controllers\SystemController;
 
 Route::get('/Description.xml', function() {
+  $hostname = gethostname();
+  $parts = explode('-', $hostname);
+  $mac = $parts[1];
 ?>
 <?xml version="1.0"?>
 <root xmlns="urn:schemas-upnp-org:device-1-0">
   <device>
     <deviceType>urn:schemas-upnp-org:device:Basic:1</deviceType>
     <presentationURL><?=config('clarion.frontend_url') ?></presentationURL>
-    <friendlyName>Clarion</friendlyName>
+    <friendlyName>Clarion <?=$mac ?></friendlyName>
     <manufacturer>Metaverse Systems</manufacturer>
     <manufacturerURL>https://metaverse.systems/</manufacturerURL>
     <modelName>Clarion</modelName>
@@ -54,5 +57,6 @@ Route::group(['prefix'=>'api/clarion/system', 'middleware' => 'auth:api'], funct
 });
 
 Route::group(['prefix'=>'api/clarion/network', 'middleware'=>'api'], function () {
+  Route::get('/', [NetworkController::class, 'index']);
   Route::post('join', [NetworkController::class, 'join']);
 });

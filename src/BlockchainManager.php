@@ -10,8 +10,12 @@ class BlockchainManager
     public function create($name)
     {
         Log::info('Creating blockchain: ' . $name);
-        Log::info(shell_exec('/usr/local/bin/multichain-util -datadir=/var/www/.multichain create ' . $name));
+        Log::info(shell_exec('/usr/local/bin/multichain-util -datadir=/var/www/.multichain create '.$name));
+        $this->config($name);
+    }
 
+    public function config($name)
+    {
         $confFile = "/var/www/.multichain/$name/multichain.conf";
         $paramsFile = "/var/www/.multichain/$name/params.dat";
 
@@ -34,6 +38,12 @@ class BlockchainManager
         $lines = explode("\n", $params);
         foreach($lines as $line)
         {
+            if(strpos($line, 'default-network-port') !== false)
+            {
+                $portData = trim(explode('=', $line)[1]);
+                $port = explode('#', $portData)[0];
+            }
+
             if(strpos($line, 'default-rpc-port') !== false)
             {
                 $rpcportData = trim(explode('=', $line)[1]);
@@ -45,6 +55,7 @@ class BlockchainManager
         $laravelEnv->set('MULTICHAIN_RPC_PORT', $rpcport);
         $laravelEnv->set('MULTICHAIN_RPC_USER', $rpcuser);
         $laravelEnv->set('MULTICHAIN_RPC_PASS', $rpcpassword);
+        $laravelEnv->set('MULTICHAIN_NODE_PORT', $port);
         $laravelEnv->save();
 
         config('multichain.rpcport', $rpcport);
@@ -68,5 +79,13 @@ user=www-data
     public function exists($name)
     {
         return file_exists("/var/www/.multichain/$name");
+    }
+
+    public function join($url)
+    {
+        Log::info('Joining blockchain: ' . $url);
+        $results = shell_exec('/usr/local/bin/multichaind -datadir=/var/www/.multichain '.$url);
+        $lines = explode("\n", $results);
+        print_r($lines);
     }
 }

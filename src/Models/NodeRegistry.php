@@ -9,6 +9,7 @@ class NodeRegistry extends Model
 {
     use EloquentMultiChainBridge;
 
-    protected $stream = 'node-registry';
+    protected $stream = 'NodeRegistry';
+    protected $table = 'node_registry';
     protected $fillable = ['id', 'name'];
 }

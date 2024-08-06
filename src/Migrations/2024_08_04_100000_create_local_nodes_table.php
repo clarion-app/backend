@@ -9,16 +9,18 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('join_requests', function (Blueprint $table) {
+        Schema::create('local_nodes', function (Blueprint $table) {
             $table->id();
             $table->uuid('node_id');
-            $table->string('blockchain_id');
+            $table->string('name');
+            $table->string('backend_url');
+            $table->string('wallet_address')->nullable();
             $table->timestamps();
         });
     }
 
     public function down()
     {
-        Schema::dropIfExists('join_requests');
+        Schema::dropIfExists('local_nodes');
     }
 };
