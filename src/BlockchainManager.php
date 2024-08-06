@@ -49,8 +49,8 @@ class BlockchainManager
 
         // Create supervisor config to run multichaind clarion
         $supervisor = new SupervisorManager();
-        $supervisor->createConfig($name, "[program:$name]
-command=/usr/local/bin/multichaind $name
+        $supervisor->createConfig($name."-multichain", "[program:$name]
+command=/usr/local/bin/multichaind -datadir=/var/www/.multichain $name
 autostart=true
 autorestart=true
 stderr_logfile=/var/www/multichain.error
