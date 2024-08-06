@@ -65,7 +65,7 @@ user=www-data
 
         $supervisor->reloadSupervisor();
 
-        sleep(5);
+        sleep(15);
 
         $m = new MultiChainClient("localhost", $rpcport, $rpcuser, $rpcpassword);
 
