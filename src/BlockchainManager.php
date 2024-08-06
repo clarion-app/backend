@@ -10,7 +10,7 @@ class BlockchainManager
     public function create($name)
     {
         Log::info('Creating blockchain: ' . $name);
-        print shell_exec('/usr/local/bin/multichain-util create ' . $name);
+        Log::info(shell_exec('/usr/local/bin/multichain-util -datadir=/var/www/.multichain create ' . $name));
 
         $confFile = "/var/www/.multichain/$name/multichain.conf";
         $paramsFile = "/var/www/.multichain/$name/params.dat";
