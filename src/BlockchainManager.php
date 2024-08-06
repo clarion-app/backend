@@ -4,7 +4,7 @@ namespace ClarionApp\Backend;
 use Illuminate\Support\Facades\Log;
 use ClarionApp\Backend\EnvEditor;
 use ClarionApp\Backend\SupervisorManager;
-use ClarionApp\Multichain\Facades\Multichain;
+use ClarionApp\MultiChain\Facades\MultiChain;
 
 class BlockchainManager
 {
