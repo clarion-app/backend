@@ -13,7 +13,11 @@ class UserController extends Controller
 {
     public function userExists()
     {
-        return User::count() > 0;
+        $status = [
+            "blockchainCreated" => config('multichain.pass') ? true : false,
+            "usersExist" => (User::count() > 0) ? true : false
+        ];
+        return response()->json($status);
     }
 
     public function index()
