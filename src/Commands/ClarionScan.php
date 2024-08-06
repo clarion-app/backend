@@ -31,6 +31,8 @@ class ClarionScan extends Command
 
         foreach ($devices as $device)
         {
+            print_r($device);
+
             $description = file_get_contents($device['Location']);
             $xml = simplexml_load_string($description);
 
@@ -59,7 +61,7 @@ class ClarionScan extends Command
     public function requestAccess($url)
     {
         $body = new stdClass;
-        $body->action = 'join_network';
+        $body->action = 'join';
         $body->arguments = [
             'node_id' => config('clarion.node_id'),
             'backend_url' => config('app.url'),
