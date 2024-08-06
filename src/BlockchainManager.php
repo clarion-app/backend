@@ -48,6 +48,10 @@ class BlockchainManager
         $laravelEnv->set('MULTICHAIN_RPC_PASS', $rpcpassword);
         $laravelEnv->save();
 
+        config('multichain.rpcport', $rpcport);
+        config('multichain.rpcuser', $rpcuser);
+        config('multichain.rpcpassword', $rpcpassword);
+
         // Create supervisor config to run multichaind clarion
         $supervisor = new SupervisorManager();
         $supervisor->createConfig($name."-multichain", "[program:$name-multichain]
