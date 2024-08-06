@@ -37,7 +37,8 @@ class BlockchainManager
         {
             if(strpos($line, 'default-rpc-port') !== false)
             {
-                $rpcport = explode('=', $line)[1];
+                $rpcportData = trim(explode('=', $line)[1]);
+                $rpcport = explode('#', $rpcportData)[0];
             }
         }
 
