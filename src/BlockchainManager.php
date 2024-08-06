@@ -4,7 +4,6 @@ namespace ClarionApp\Backend;
 use Illuminate\Support\Facades\Log;
 use ClarionApp\Backend\EnvEditor;
 use ClarionApp\Backend\SupervisorManager;
-use ClarionApp\MultiChain\MultiChainClient;
 
 class BlockchainManager
 {
@@ -64,13 +63,6 @@ user=www-data
 ");
 
         $supervisor->reloadSupervisor();
-
-        sleep(15);
-
-        $m = new MultiChainClient("localhost", $rpcport, $rpcuser, $rpcpassword);
-
-        $m->create("stream", "UserRegistry", false);
-        $m->subscribe("UserRegistry");
     }
 
     public function exists($name)
