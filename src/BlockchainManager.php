@@ -3,7 +3,6 @@ namespace ClarionApp\Backend;
 
 use Illuminate\Support\Facades\Log;
 use ClarionApp\Backend\EnvEditor;
-use ClarionApp\Backend\ConfigEditor;
 use ClarionApp\Backend\SupervisorManager;
 
 class BlockchainManager
@@ -59,7 +58,10 @@ user=www-data
 ");
 
         $supervisor->reloadSupervisor();
+    }
 
-        //ConfigEditor::update('eloquent-multichain-bridge.disabled', false);
+    public function exists($name)
+    {
+        return file_exists("/var/www/.multichain/$name");
     }
 }

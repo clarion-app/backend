@@ -5,6 +5,7 @@ use ClarionApp\Backend\Controllers\ComposerController;
 use ClarionApp\Backend\Controllers\AppController;
 use ClarionApp\Backend\Controllers\UserController;
 use ClarionApp\Backend\Controllers\NetworkController;
+use ClarionApp\Backend\Controllers\SystemController;
 
 Route::get('/Description.xml', function() {
 ?>
@@ -38,6 +39,7 @@ Route::group(['prefix'=>'api/clarion/system', 'middleware'=>'api'], function () 
     Route::get('user/exists', [UserController::class, 'userExists']);
     Route::resource('user', UserController::class)->only(['store']);
     Route::post('user/login', [UserController::class, 'login']);
+    Route::post('network/create', [SystemController::class, 'create']);
 });
 
 Route::group(['prefix'=>'api/clarion/system', 'middleware' => 'auth:api'], function () {
