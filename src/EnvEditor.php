@@ -1,6 +1,5 @@
 <?php
-
-namespace ClarionApp\Installer;
+namespace ClarionApp\Backend;
 
 class EnvEditor
 {
