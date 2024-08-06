@@ -59,7 +59,7 @@ files = {$this->configPath}/conf.d/*.conf
 
     public function reloadSupervisor()
     {
-        Process::run("supervisorctl reload");
+        Process::run("sudo /usr/bin/supervisorctl update");
     }
 
     public function startProgram($programName)
