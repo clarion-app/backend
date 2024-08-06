@@ -58,6 +58,8 @@ stdout_logfile=/var/www/multichain.log
 user=www-data
 ");
 
+        $supervisor->reloadSupervisor();
+
         //ConfigEditor::update('eloquent-multichain-bridge.disabled', false);
     }
 }
