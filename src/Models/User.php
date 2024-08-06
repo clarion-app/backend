@@ -23,5 +23,5 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    protected $stream = "user-registry";
+    protected $stream = "UserRegistry";
 }
