@@ -85,15 +85,15 @@ class ClarionScan extends Command
         $manager = new BlockchainManager();
         $wallet_address = $manager->join($data->url);
 
+        $hostname = gethostname();
+
         $body = new stdClass;
-        $body->action = 'join';
-        $body->arguments = [
-            'node_id' => config('clarion.node_id'),
-            'wallet_address' => $wallet_address,
-        ];
+        $body->id = config('clarion.node_id');
+        $body->name = $hostname;
+        $body->wallet_address = $wallet_address;
 
         $client = new \GuzzleHttp\Client();
-        $response = $client->post($url, [
+        $response = $client->post($url."/join", [
             'json' => $body,
         ]);
 
