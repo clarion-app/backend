@@ -10,6 +10,7 @@ use ClarionApp\Backend\ConfigEditor;
 use ClarionApp\MultiChain\Facades\MultiChain;
 use ClarionApp\EloquentMultiChainBridge\DataStreamRegistry;
 use ClarionApp\Backend\Models\LocalNode;
+use stdClass;
 
 class SystemController extends Controller
 {
