@@ -55,7 +55,7 @@ class SystemController extends Controller
         Log::info('Joining blockchain: ' . $url);
         
         $manager = new BlockchainManager();
-        $wallet_address = $manager->join($result->url);
+        $wallet_address = $manager->requestJoin($result->url);
 
         $hostname = gethostname();
 
