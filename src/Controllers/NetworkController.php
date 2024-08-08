@@ -74,4 +74,10 @@ class NetworkController extends Controller
         $requests = BlockchainRequest::all();
         return $requests;
     }
+
+    public function localNodesIndex()
+    {
+        $nodes = LocalNode::all();
+        return $nodes;
+    }
 }
