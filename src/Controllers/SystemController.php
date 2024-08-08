@@ -43,7 +43,7 @@ class SystemController extends Controller
     /* Called by frontend */
     public function join(Request $request)
     {
-        $id = $request->input('id');
+        $id = $request->input('node_id');
         $node = LocalNode::where('node_id', $id)->first();
         if(!$node)
         {
