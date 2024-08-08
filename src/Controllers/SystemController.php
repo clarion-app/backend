@@ -47,7 +47,7 @@ class SystemController extends Controller
         $node = LocalNode::where('node_id', $id)->first();
         if(!$node)
         {
-            return response()->json(['error' => 'Node not found'], 404);
+            return response()->json(['error' => 'Node '.$id.' not found'], 404);
         }
 
         $url = $node->backend_url.'/api/clarion/network';
