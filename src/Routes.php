@@ -43,6 +43,7 @@ Route::group(['prefix'=>'api/clarion/system', 'middleware'=>'api'], function () 
     Route::resource('user', UserController::class)->only(['store']);
     Route::post('user/login', [UserController::class, 'login']);
     Route::post('network/create', [SystemController::class, 'create']);
+    Route::post('network/join', [SystemController::class, 'join']);
 });
 
 Route::group(['prefix'=>'api/clarion/system', 'middleware' => 'auth:api'], function () {
