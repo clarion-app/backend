@@ -9,18 +9,16 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('local_nodes', function (Blueprint $table) {
+        Schema::create('blockchain_requests', function (Blueprint $table) {
             $table->id();
             $table->uuid('node_id')->unique();
-            $table->string('name');
-            $table->string('backend_url');
-            $table->string('wallet_address')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
     public function down()
     {
-        Schema::dropIfExists('local_nodes');
+        Schema::dropIfExists('blockchain_requests');
     }
 };

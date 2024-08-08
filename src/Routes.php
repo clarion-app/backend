@@ -59,4 +59,10 @@ Route::group(['prefix'=>'api/clarion/system', 'middleware' => 'auth:api'], funct
 Route::group(['prefix'=>'api/clarion/network', 'middleware'=>'api'], function () {
   Route::get('/', [NetworkController::class, 'index']);
   Route::post('join', [NetworkController::class, 'join']);
+  Route::post('complete_join', [NetworkController::class, 'completeJoin']);
+});
+
+Route::group(['prefix'=>'api/clarion/network', 'middleware'=>'auth:api'], function () {
+  Route::post('accept', [NetworkController::class, 'accept']);
+  Route::get('requests', [NetworkController::class, 'requestsIndex']);
 });

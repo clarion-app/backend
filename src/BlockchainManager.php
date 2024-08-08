@@ -81,7 +81,7 @@ user=www-data
         return file_exists("/var/www/.multichain/$name");
     }
 
-    public function join($url)
+    public function requestJoin($url)
     {
         Log::info('Joining blockchain: ' . $url);
         $results = shell_exec('/usr/local/bin/multichaind -datadir=/var/www/.multichain '.$url);

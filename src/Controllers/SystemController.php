@@ -9,6 +9,7 @@ use ClarionApp\Backend\BlockchainManager;
 use ClarionApp\Backend\ConfigEditor;
 use ClarionApp\MultiChain\Facades\MultiChain;
 use ClarionApp\EloquentMultiChainBridge\DataStreamRegistry;
+use ClarionApp\Backend\Models\LocalNode;
 
 class SystemController extends Controller
 {
@@ -39,10 +40,35 @@ class SystemController extends Controller
         return response()->json(['message' => 'Blockchain created'], 200);
     }
 
+    /* Called by frontend */
     public function join(Request $request)
     {
-        $url = $request->input('url');
+        $id = $request->input('id');
+        $node = LocalNode::where('node_id', $id)->first();
+        if(!$node)
+        {
+            return response()->json(['error' => 'Node not found'], 404);
+        }
+
+        $url = $node->backend_url.'/api/clarion/network';
+        $result = json_decode(file_get_contents($url));
         Log::info('Joining blockchain: ' . $url);
-        return response()->json(['message' => 'Not implemented'], 501);
+        
+        $manager = new BlockchainManager();
+        $wallet_address = $manager->join($result->url);
+
+        $hostname = gethostname();
+
+        $body = new stdClass;
+        $body->id = config('clarion.node_id');
+        $body->name = $hostname;
+        $body->wallet_address = $wallet_address;
+
+        $client = new \GuzzleHttp\Client();
+        $response = $client->post($url."/join", [
+            'json' => $body,
+        ]);
+        Log::info(print_r($response, true));
+        return response()->json(['message' => 'Not implemented'], 201);
     }
 }
