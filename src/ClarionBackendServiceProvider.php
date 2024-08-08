@@ -10,6 +10,7 @@ use ClarionApp\Backend\Commands\BlockNotify;
 use ClarionApp\Backend\Commands\ClarionScan;
 use ClarionApp\Backend\Models\User;
 use ClarionApp\Backend\Controllers\UserController;
+use ClarionApp\Backend\Jobs\NodeDiscovery;
 
 class ClarionBackendServiceProvider extends ServiceProvider
 {
@@ -66,6 +67,14 @@ class ClarionBackendServiceProvider extends ServiceProvider
 
             app('router')->get('/api/user', [UserController::class, "index"])->middleware('auth:api');
 
+            $schedule = $this->app->make(Schedule::class);
+            $schedule->call(function() {
+                $result = shell_exec('pgrep -c -f "php artisan queue:work --queue=default"');
+                if($result == "2\n")
+                {
+                    dispatch(new NodeDiscovery());
+                }
+            })->everyFiveSeconds();
         });
     }
 }
