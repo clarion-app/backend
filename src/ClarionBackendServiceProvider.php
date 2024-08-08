@@ -11,6 +11,7 @@ use ClarionApp\Backend\Commands\ClarionScan;
 use ClarionApp\Backend\Models\User;
 use ClarionApp\Backend\Controllers\UserController;
 use ClarionApp\Backend\Jobs\NodeDiscovery;
+use Illuminate\Console\Scheduling\Schedule;
 
 class ClarionBackendServiceProvider extends ServiceProvider
 {
