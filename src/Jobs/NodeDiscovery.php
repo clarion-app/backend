@@ -47,7 +47,7 @@ class NodeDiscovery implements ShouldQueue
             $name = $xml->device->friendlyName;
             $backend_url = $xml->device->presentationURL.":8000";
 
-            $node = LocalNode::find($id);
+            $node = LocalNode::where('node_id', $id)->first();
             if(!$node)
             {
                 $node = new LocalNode;
