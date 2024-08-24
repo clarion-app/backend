@@ -45,7 +45,12 @@ class ApiManager
             {
                 if($details->operationId == $operationId)
                 {
-                    return $details;
+                    return [
+                        "path" => $path,
+                        "method" => $method,
+                        "details" => $details
+                    ];
+
                 }
             }
         }
