@@ -68,3 +68,10 @@ Route::group(['prefix'=>'api/clarion/network', 'middleware'=>'auth:api'], functi
   Route::post('accept', [NetworkController::class, 'accept']);
   Route::get('requests', [NetworkController::class, 'requestsIndex']);
 });
+
+Route::group(['prefix'=>'api/docs', 'middleware'=>'api'], function () {
+  Route::get('packages', function() {
+    $packages = ClarionApp\Backend\ApiManager::getPackageDescriptions();
+    return response()->json($packages);
+  });
+});
