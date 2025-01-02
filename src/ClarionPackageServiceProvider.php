@@ -25,7 +25,7 @@ abstract class ClarionPackageServiceProvider extends ServiceProvider
         if (!$clarion) return;
         $name = $clarion['app-name'];
         $description = $clarion['description'];
-        $this->routePrefix = 'api/' . $name;
+        $this->routePrefix = 'api/' . str_replace("@", "", $name);
         self::$packageDescriptions[$name] = ['description'=>$description, 'operations'=>[]];
     }
 

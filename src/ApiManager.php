@@ -40,6 +40,8 @@ class ApiManager
         {
             if($urlFilter != null)
             {
+                $urlFilter = str_replace("@", "", $urlFilter);
+                
                 if(!str_starts_with($url, $urlFilter))
                     continue;
             }
@@ -51,12 +53,7 @@ class ApiManager
                     if(strpos($details->summary, "resource") === false)
                         $result = ["operationId"=>$details->operationId, "summary"=>$details->summary];
 
-                    if(isset($details->requestBody))
-                    {
-//                        $result["requestBody"] = $details->requestBody;
-                    }
-
-                    $results[] = $result;
+                    if(isset($result)) $results[] = $result;
                 }
             }
         }
