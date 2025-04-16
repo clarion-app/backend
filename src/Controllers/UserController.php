@@ -5,6 +5,7 @@ namespace ClarionApp\Backend\Controllers;
 // a resource controller for the User model. Use Validator and make sure password matches c_password
 use App\Http\Controllers\Controller;
 use ClarionApp\Backend\Models\User;
+use ClarionApp\Backend\Models\LocalNode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -13,9 +14,11 @@ class UserController extends Controller
 {
     public function userExists()
     {
+        $node = LocalNode::where('node_id', config('clarion.node_id'))->first();
         $status = [
             "blockchainCreated" => config('multichain.pass') ? true : false,
-            "usersExist" => (User::count() > 0) ? true : false
+            "usersExist" => (User::count() > 0) ? true : false,
+            "node" => $node
         ];
         return response()->json($status);
     }
