@@ -85,6 +85,7 @@ user=www-data
     {
         Log::info('Joining blockchain: ' . $url);
         $results = shell_exec('/usr/local/bin/multichaind -datadir=/var/www/.multichain '.$url);
+        Log::info($results);
         $lines = explode("\n", $results);
         $parts = explode(' ', $lines[4]);
         $wallet_address = $parts[3];
