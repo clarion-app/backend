@@ -88,6 +88,7 @@ user=www-data
         $lines = explode("\n", $results);
         $parts = explode(' ', $lines[4]);
         $wallet_address = $parts[3];
+        Log::info("Joining with wallet address: $wallet_address");
         return $wallet_address;
     }
 }
