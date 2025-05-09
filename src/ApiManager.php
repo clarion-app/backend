@@ -40,7 +40,7 @@ class ApiManager
         {
             if($urlFilter != null)
             {
-                $urlFilter = str_replace("@", "", $urlFilter);
+                $urlFilter = str_replace("@", "/", $urlFilter);
                 
                 if(!str_starts_with($url, $urlFilter))
                     continue;

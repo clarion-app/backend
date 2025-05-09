@@ -53,7 +53,6 @@ class SystemController extends Controller
 
         $url = $node->backend_url.'/api/clarion/network';
         $result = json_decode(file_get_contents($url));
-        Log::info('Joining blockchain: ' . $url);
         
         $manager = new BlockchainManager();
         $wallet_address = $manager->requestJoin($result->url);
