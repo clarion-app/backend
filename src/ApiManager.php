@@ -63,14 +63,14 @@ class ApiManager
     /** 
      * Get operation details
      **/   
-    public static function getOperationDetails(string $operationId): object
+    public static function getOperationDetails(string $operationId)
     {
         $url = config("app.url")."/docs/api.json";
         $api = json_decode(file_get_contents($url));
 
-        foreach($api->paths as $path)
+        foreach($api->paths as $path=>$pathDetails)
         {
-            foreach($path as $method=>$details)
+            foreach($pathDetails as $method=>$details)
             {
                 if($details->operationId == $operationId)
                 {
@@ -82,6 +82,25 @@ class ApiManager
 
                 }
             }
+        }
+        return (object)[];
+    }
+
+    /**
+     * Get custom prompts
+     */
+    public static function getCustomPrompts($package): object
+    {
+        $path = base_path("vendor/$package")."/composer.json";
+        Log::info("Getting custom prompts from $path");
+        if(!file_exists($path))
+        {
+            return (object)[];
+        }
+        $composer = json_decode(file_get_contents($path));
+        if(isset($composer->extra->clarion->customPrompts))
+        {
+            return $composer->extra->clarion->customPrompts;
         }
         return (object)[];
     }
