@@ -5,11 +5,16 @@ namespace ClarionApp\Backend;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Log;
 use ReflectionClass;
+use ClarionApp\Backend\ApiManager;
 
 abstract class ClarionPackageServiceProvider extends ServiceProvider
 {
-    protected static $packageDescriptions = [];
+    protected string $packageName;
     protected string $routePrefix;
+
+    protected static $packageDescriptions = [];
+    protected static $packageOperations = [];
+    protected static $customPrompts = [];
 
     public function register(): void
     {
@@ -23,10 +28,11 @@ abstract class ClarionPackageServiceProvider extends ServiceProvider
         $composerInfo = json_decode(file_get_contents($composerPath), true);
         $clarion = $composerInfo['extra']['clarion'] ?? false;
         if (!$clarion) return;
-        $name = $clarion['app-name'];
+        $this->packageName = $clarion['app-name'];
         $description = $clarion['description'];
-        $this->routePrefix = 'api/' . str_replace("@", "", $name);
-        self::$packageDescriptions[$name] = ['description'=>$description, 'operations'=>[]];
+        $this->routePrefix = 'api/' . str_replace("@", "", $this->packageName);
+        self::$packageDescriptions[$this->packageName] = ['description'=>$description];
+        self::$customPrompts[$this->packageName] = $clarion['customPrompts'] ?? [];
     }
 
     public function boot(): void
@@ -36,5 +42,18 @@ abstract class ClarionPackageServiceProvider extends ServiceProvider
     public static function getPackageDescriptions(): array
     {
         return self::$packageDescriptions;
+    }
+
+    public static function getPackageOperations($package): array
+    {
+        if (!isset(self::$packageOperations[$package])) {
+            self::$packageOperations[$package] = ApiManager::getOperations($package);
+        }
+        return self::$packageOperations[$package];
+    }
+
+    public static function getCustomPrompts($package): array
+    {
+        return self::$customPrompts[$package];
     }
 }

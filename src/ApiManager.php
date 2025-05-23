@@ -2,6 +2,7 @@
 namespace ClarionApp\Backend;
 
 use Illuminate\Support\Facades\Log;
+use ClarionApp\Backend\Services\DocumentationService;
 
 class ApiManager
 {
@@ -12,15 +13,6 @@ class ApiManager
     {
         $packages = ClarionPackageServiceProvider::getPackageDescriptions();
 
-        foreach($packages as $name=>$package)
-        {
-            $operations = self::getOperations("/".$name);
-            foreach($operations as $operation)
-            {
-                if(in_array($operation['summary'], $packages[$name]['operations'])) continue;
-                $packages[$name]['operations'][] = $operation['summary'];
-            }
-        }
         return $packages;
     }
 
@@ -32,28 +24,41 @@ class ApiManager
      */
     public static function getOperations($urlFilter = null): array
     {
-        $url = config("app.url")."/docs/api.json";
-        $api = json_decode(file_get_contents($url));
+        if($urlFilter != null)
+        {
+            $urlFilter = str_replace("@", "/", $urlFilter);
+        }
+
+        $docService = new DocumentationService();
+        $api = $docService->getApiDocs();
 
         $results = [];
-        foreach($api->paths as $url=>$path)
+        foreach($api['paths'] as $url=>$path)
         {
             if($urlFilter != null)
             {
-                $urlFilter = str_replace("@", "/", $urlFilter);
-                
                 if(!str_starts_with($url, $urlFilter))
                     continue;
             }
 
             foreach($path as $method=>$details)
             {
-                if(isset($details->summary))
+                if(isset($details['summary']))
                 {
-                    if(strpos($details->summary, "resource") === false)
-                        $result = ["operationId"=>$details->operationId, "summary"=>$details->summary];
+                    if(strpos($details['summary'], "resource") === false)
+                    {
+                        $result = ["operationId"=>$details['operationId'], "summary"=>$details['summary']];
+                    }
 
-                    if(isset($result)) $results[] = $result;
+                    if(isset($result))
+                    {
+                        foreach($results as $r)
+                        {
+                            if($r['operationId'] == $result['operationId'])
+                                continue 2;
+                        }
+                        $results[] = $result;
+                    }
                 }
             }
         }
@@ -65,14 +70,14 @@ class ApiManager
      **/   
     public static function getOperationDetails(string $operationId)
     {
-        $url = config("app.url")."/docs/api.json";
-        $api = json_decode(file_get_contents($url));
+        $docService = new DocumentationService();
+        $api = $docService->getApiDocs();
 
-        foreach($api->paths as $path=>$pathDetails)
+        foreach($api['paths'] as $path=>$pathDetails)
         {
             foreach($pathDetails as $method=>$details)
             {
-                if($details->operationId == $operationId)
+                if($details['operationId'] == $operationId)
                 {
                     return [
                         "path" => $path,
@@ -86,22 +91,8 @@ class ApiManager
         return (object)[];
     }
 
-    /**
-     * Get custom prompts
-     */
-    public static function getCustomPrompts($package): object
+    public static function getCustomPrompts($package): array
     {
-        $path = base_path("vendor/$package")."/composer.json";
-        Log::info("Getting custom prompts from $path");
-        if(!file_exists($path))
-        {
-            return (object)[];
-        }
-        $composer = json_decode(file_get_contents($path));
-        if(isset($composer->extra->clarion->customPrompts))
-        {
-            return $composer->extra->clarion->customPrompts;
-        }
-        return (object)[];
+        return ClarionPackageServiceProvider::getCustomPrompts($package);
     }
 }
