@@ -14,7 +14,7 @@ class AppManager
     public function appInstall($package)
     {
         [$org, $name] = explode('/', $package);
-        $url = "https://store.clarion.app/$package";
+        $url = config("clarion.store_url")."/api/organizations/$org/packages/$name";
         Log::info($url);
         $packageData = json_decode(file_get_contents($url));
         Log::info(print_r($packageData, 1));
@@ -36,21 +36,21 @@ class AppManager
             return "App already installed";
         }
 
-        foreach($packageData->npmPackages as $npmPackage)
+        foreach($packageData->npm_packages as $npmPackage)
         {
-            Log::info("Installing $npmPackage");
-            $this->npmInstall($npmPackage, $app->id);
+            Log::info("Installing ".print_r($npmPackage, 1));
+            $this->npmInstall($npmPackage->name, $app->id);
         }
 
 
-        foreach($packageData->composerPackages as $composerPackage)
+        foreach($packageData->composer_packages as $composerPackage)
         {
-            Log::info("Installing $composerPackage");
-            $this->composerInstall($composerPackage, $app->id);
+            Log::info("Installing ".print_r($composerPackage, 1));
+            $this->composerInstall($composerPackage->name, $app->id);
         }
 
         $app->update(['installed' => true]);
-        return $packageData->npmPackages;
+        return $packageData->npm_packages;
     }
 
     public function appUninstall($package)
@@ -137,6 +137,7 @@ class AppManager
 
     public function composerUninstall($package)
     {
+        Log::info("Uninstalling composer package $package");
         $path = base_path();
         chdir($path);
         $composer = app(Composer::class);

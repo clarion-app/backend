@@ -77,7 +77,7 @@ class ClarionBackendServiceProvider extends ServiceProvider
                 {
                     dispatch(new NodeDiscovery());
                 }
-            })->everyFiveSeconds();
+            })->everyTenSeconds();
         });
     }
 }

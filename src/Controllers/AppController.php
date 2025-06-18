@@ -19,30 +19,26 @@ class AppController extends Controller
 
     public function index()
     {
-        $apps = json_decode(file_get_contents('https://store.clarion.app'));
-        $packageNames = [];
-        $packageOrgs = [];
-        foreach($apps as &$app)
+        $packages = [];
+        $orgs = $this->getOrganizations();
+        foreach($orgs as $org)
         {
-            [$org, $name] = explode("/", $app->package);
-            $packageOrgs[] = $org;
-            $packageNames[] = $name;
+            $packages = array_merge($packages, $this->getPackages($org));
         }
 
-        $installedApps = AppPackage::whereIn('organization', $packageOrgs)->whereIn('name', $packageNames)->where('installed', true)->get();
-        foreach($apps as &$app)
+        $installedApps = AppPackage::where('installed', true)->get();
+        foreach($packages as &$package)
         {
-            [$org, $name] = explode("/", $app->package);
-            $app->installed = false;
+            $package['installed'] = false;
             foreach($installedApps as $installedApp)
             {
-                if($installedApp->organization != $org) continue;
-                if($installedApp->name != $name) continue;
-                $app->installed = true;
+                if($installedApp->organization != $package['organization']) continue;
+                if($installedApp->name != $package['name']) continue;
+                $package['installed'] = true;
             }
         }
         
-        return response()->json($apps);
+        return response()->json($packages);
     }
 
     public function install(Request $request)
@@ -55,5 +51,30 @@ class AppController extends Controller
     {
         $output = $this->appManager->appUninstall($request->input('package'));
         return response()->json($output);
+    }
+
+    private function getOrganizations()
+    {
+        $orgs = [];
+        $results = json_decode(file_get_contents(config('clarion.store_url').'/api/organizations'));
+        foreach($results as $result) $orgs[] = $result->name;
+        return $orgs;
+    }
+
+    private function getPackages($org)
+    {
+        $packages = [];
+        $results = json_decode(file_get_contents(config('clarion.store_url')."/api/organizations/$org"));
+        foreach($results->packages as $package)
+        {
+            $package = [
+                'name' => $package->name,
+                'title' => $package->title,
+                'description' => $package->description,
+                'organization' => $org
+            ];
+            $packages[] = $package;
+        }
+        return $packages;
     }
 }
