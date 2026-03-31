@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "852b5ffa7bdab85bbd1ea82acf0ecbc8",
+    "content-hash": "d9496f5e0e65007de373f931d53faf5b",
     "packages": [
         {
             "name": "brick/math",
@@ -246,17 +246,11 @@
         },
         {
             "name": "clarion-app/llm-client",
-            "version": "dev-audit-fixes",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/clarion-app/llm-client.git",
-                "reference": "0fa2c970554056214c5a47a12725f64d7e133e48"
-            },
+            "version": "dev-main",
             "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/clarion-app/llm-client/zipball/0fa2c970554056214c5a47a12725f64d7e133e48",
-                "reference": "0fa2c970554056214c5a47a12725f64d7e133e48",
-                "shasum": ""
+                "type": "path",
+                "url": "../llm-client",
+                "reference": "5726e3bc61de998ff8b2f69ca79c6d8f14e3e761"
             },
             "require": {
                 "clarion-app/backend": "dev-main",
@@ -266,14 +260,14 @@
             },
             "type": "library",
             "extra": {
-                "clarion": {
-                    "app-name": "@clarion-app/llm-client",
-                    "description": "Provides a client for interacting with Large Language Models"
-                },
                 "laravel": {
                     "providers": [
                         "ClarionApp\\LlmClient\\LlmClientServiceProvider"
                     ]
+                },
+                "clarion": {
+                    "app-name": "@clarion-app/llm-client",
+                    "description": "Provides a client for interacting with Large Language Models"
                 }
             },
             "autoload": {
@@ -281,7 +275,6 @@
                     "ClarionApp\\LlmClient\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -292,11 +285,9 @@
                 }
             ],
             "description": "Handles interactions with Large Language Models",
-            "support": {
-                "issues": "https://github.com/clarion-app/llm-client/issues",
-                "source": "https://github.com/clarion-app/llm-client/tree/audit-fixes"
-            },
-            "time": "2026-03-31T01:44:36+00:00"
+            "transport-options": {
+                "relative": true
+            }
         },
         {
             "name": "clarion-app/multichain",
