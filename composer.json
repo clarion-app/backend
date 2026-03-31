@@ -13,6 +13,12 @@
             "email": "tim@metaverse.systems"
         }
     ],
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../llm-client"
+        }
+    ],
     "require": {
         "laravel/passport": "^13.0",
         "spatie/laravel-permission": "^6.0@dev",
