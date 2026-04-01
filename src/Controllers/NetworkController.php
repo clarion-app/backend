@@ -9,9 +9,12 @@ use ClarionApp\Backend\Models\NodeRegistry;
 use ClarionApp\Backend\Models\LocalNode;
 use ClarionApp\Backend\Models\BlockchainRequest;
 use ClarionApp\Backend\BlockchainManager;
+use ClarionApp\Backend\Rules\BlockchainName;
+use ClarionApp\Backend\Traits\JsonErrorResponse;
 
 class NetworkController extends Controller
 {
+    use JsonErrorResponse;
     public function index()
     {
         $app_url = explode(":", config('app.url'));
@@ -24,6 +27,10 @@ class NetworkController extends Controller
 
     public function join(Request $request)
     {
+        $request->validate([
+            'id' => ['required', 'string'],
+        ]);
+
         $id = $request->input('id');
         $name = $request->input('name');
 
@@ -40,7 +47,11 @@ class NetworkController extends Controller
     /* Called by existing node */
     public function completeJoin(Request $request)
     {
-        $name = $request->input(name);
+        $request->validate([
+            'name' => ['required', 'string', new BlockchainName],
+        ]);
+
+        $name = $request->input('name');
         
         $manager = new BlockchainManager();
         $manager->config($name);

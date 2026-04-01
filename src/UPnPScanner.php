@@ -2,6 +2,10 @@
 
 namespace ClarionApp\Backend;
 
+use ClarionApp\Backend\Models\LocalNode;
+use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\Exception\RequestException;
+
 class UPnPScanner
 {
     private $serviceType;
@@ -56,5 +60,48 @@ class UPnPScanner
         }
 
         return $parsedResponse;
+    }
+
+    /**
+     * Discover Clarion nodes via UPnP, fetch descriptions, and upsert LocalNode records.
+     *
+     * @return LocalNode[] Array of discovered/updated LocalNode models
+     */
+    public function discoverAndUpsertNodes(): array
+    {
+        $devices = $this->discoverDevices();
+        $nodes = [];
+        $httpClient = app(GuzzleClient::class);
+
+        foreach ($devices as $device) {
+            try {
+                $response = $httpClient->get($device['Location']);
+                $description = $response->getBody()->getContents();
+            } catch (RequestException $e) {
+                continue;
+            }
+
+            $xml = simplexml_load_string($description);
+            if ($xml === false || $xml->device->modelName != 'Clarion') {
+                continue;
+            }
+
+            $id = explode(":", (string) $xml->device->UDN)[1];
+            $name = (string) $xml->device->friendlyName;
+            $backend_url = (string) $xml->device->presentationURL . ":8000";
+
+            $node = LocalNode::where('node_id', $id)->first();
+            if (!$node) {
+                $node = new LocalNode;
+                $node->node_id = $id;
+                $node->name = $name;
+                $node->backend_url = $backend_url;
+                $node->save();
+            }
+
+            $nodes[] = $node;
+        }
+
+        return $nodes;
     }
 }

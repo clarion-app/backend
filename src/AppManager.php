@@ -8,15 +8,26 @@ use ClarionApp\Backend\Models\AppPackage;
 use ClarionApp\Backend\Models\NpmPackage;
 use ClarionApp\Backend\Events\InstallNPMPackageEvent;
 use ClarionApp\Backend\Events\UninstallNPMPackageEvent;
+use Symfony\Component\Process\Process;
+use GuzzleHttp\Client as GuzzleClient;
 
 class AppManager
 {
+    private function validateComposerPackageName(string $package): void
+    {
+        if (!preg_match('/^[a-z0-9]([_.\-]?[a-z0-9]+)*\/[a-z0-9]([_.\-]?[a-z0-9]+)*$/', $package)) {
+            throw new \InvalidArgumentException("Invalid composer package name: $package");
+        }
+    }
+
     public function appInstall($package)
     {
         [$org, $name] = explode('/', $package);
         $url = config("clarion.store_url")."/api/organizations/$org/packages/$name";
         Log::info($url);
-        $packageData = json_decode(file_get_contents($url));
+        $httpClient = app(GuzzleClient::class);
+        $response = $httpClient->get($url);
+        $packageData = json_decode($response->getBody()->getContents());
         Log::info(print_r($packageData, 1));
 
         $app = AppPackage::where('organization', $org)->where('name', $name)->first();
@@ -89,13 +100,13 @@ class AppManager
 
     public function npmInstall($package, $app_id = "0")
     {
-        //event(new InstallNPMPackageEvent($package));
+        event(new InstallNPMPackageEvent($package));
         $this->updateNpmPackageTable($package, $app_id);
     }
 
     public function npmUninstall($package)
     {
-        //event(new UninstallNPMPackageEvent($package));
+        event(new UninstallNPMPackageEvent($package));
         [$org, $name] = explode('/', $package);
         $npmPackage = NpmPackage::where('organization', $org)->where('name', $name)->first();
         $npmPackage->delete();
@@ -123,13 +134,31 @@ class AppManager
 
     public function composerInstall($package, $app_id = "0")
     {
+        $this->validateComposerPackageName($package);
+
         $path = base_path();
         chdir($path);
         $composer = app(Composer::class);
         $composer->run(['require', $package]);
-        $output = shell_exec("cd $path; /usr/local/bin/composer require $package");
-        $output = shell_exec("cd $path; php artisan migrate");
-        $output .= shell_exec("cd $path; php artisan queue:restart");
+
+        $process = new Process(['/usr/local/bin/composer', 'require', $package]);
+        $process->setWorkingDirectory($path);
+        $process->setTimeout(60);
+        $process->run();
+        $output = $process->getOutput();
+
+        $migrate = new Process(['php', 'artisan', 'migrate']);
+        $migrate->setWorkingDirectory($path);
+        $migrate->setTimeout(60);
+        $migrate->run();
+        $output .= $migrate->getOutput();
+
+        $restart = new Process(['php', 'artisan', 'queue:restart']);
+        $restart->setWorkingDirectory($path);
+        $restart->setTimeout(60);
+        $restart->run();
+        $output .= $restart->getOutput();
+
         Log::info($output);
         $this->updateComposerPackageTable($package, $app_id);
         return $output;
@@ -137,13 +166,26 @@ class AppManager
 
     public function composerUninstall($package)
     {
+        $this->validateComposerPackageName($package);
+
         Log::info("Uninstalling composer package $package");
         $path = base_path();
         chdir($path);
         $composer = app(Composer::class);
         $composer->run(['remove', $package]);
-        $output = shell_exec("cd $path; /usr/local/bin/composer remove $package");
-        $output = shell_exec("cd $path; php artisan queue:restart");
+
+        $process = new Process(['/usr/local/bin/composer', 'remove', $package]);
+        $process->setWorkingDirectory($path);
+        $process->setTimeout(60);
+        $process->run();
+        $output = $process->getOutput();
+
+        $restart = new Process(['php', 'artisan', 'queue:restart']);
+        $restart->setWorkingDirectory($path);
+        $restart->setTimeout(60);
+        $restart->run();
+        $output .= $restart->getOutput();
+
         [$org, $name] = explode('/', $package);
         $composerPackage = ComposerPackage::where('organization', $org)->where('name', $name)->first();
         $composerPackage->delete();

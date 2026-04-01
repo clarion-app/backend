@@ -13,6 +13,8 @@ use ClarionApp\Backend\Models\User;
 use ClarionApp\Backend\Controllers\UserController;
 use ClarionApp\Backend\Jobs\NodeDiscovery;
 use Illuminate\Console\Scheduling\Schedule;
+use GuzzleHttp\Client as GuzzleClient;
+use Symfony\Component\Process\Process;
 
 class ClarionBackendServiceProvider extends ServiceProvider
 {
@@ -29,6 +31,14 @@ class ClarionBackendServiceProvider extends ServiceProvider
             ClarionScan::class,
             TestAPI::class
         ]);
+
+        $this->app->singleton(GuzzleClient::class, function () {
+            return new GuzzleClient([
+                'connect_timeout' => 5,
+                'timeout' => 15,
+                'allow_redirects' => ['max' => 5],
+            ]);
+        });
     }
 
     /**
@@ -72,8 +82,10 @@ class ClarionBackendServiceProvider extends ServiceProvider
 
             $schedule = $this->app->make(Schedule::class);
             $schedule->call(function() {
-                $result = shell_exec('pgrep -c -f "php artisan queue:work --queue=default"');
-                if($result == "2\n")
+                $process = new Process(['pgrep', '-c', '-f', 'php artisan queue:work --queue=default']);
+                $process->run();
+                $result = trim($process->getOutput());
+                if($result === "2")
                 {
                     dispatch(new NodeDiscovery());
                 }

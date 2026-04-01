@@ -10,10 +10,13 @@ use ClarionApp\Backend\ConfigEditor;
 use ClarionApp\MultiChain\Facades\MultiChain;
 use ClarionApp\EloquentMultiChainBridge\DataStreamRegistry;
 use ClarionApp\Backend\Models\LocalNode;
+use GuzzleHttp\Client as GuzzleClient;
+use ClarionApp\Backend\Traits\JsonErrorResponse;
 use stdClass;
 
 class SystemController extends Controller
 {
+    use JsonErrorResponse;
     public function create()
     {
         $manager = new BlockchainManager();
@@ -44,6 +47,10 @@ class SystemController extends Controller
     /* Called by frontend */
     public function join(Request $request)
     {
+        $request->validate([
+            'node_id' => ['required', 'string'],
+        ]);
+
         $id = $request->input('node_id');
         $node = LocalNode::where('node_id', $id)->first();
         if(!$node)
@@ -52,7 +59,9 @@ class SystemController extends Controller
         }
 
         $url = $node->backend_url.'/api/clarion/network';
-        $result = json_decode(file_get_contents($url));
+        $httpClient = app(GuzzleClient::class);
+        $response = $httpClient->get($url);
+        $result = json_decode($response->getBody()->getContents());
         
         $manager = new BlockchainManager();
         $wallet_address = $manager->requestJoin($result->url);
@@ -69,6 +78,6 @@ class SystemController extends Controller
             'json' => $body,
         ]);
         Log::info(print_r($response, true));
-        return response()->json(['message' => 'Not implemented'], 201);
+        return $this->notImplementedResponse();
     }
 }

@@ -4,20 +4,41 @@ namespace ClarionApp\Backend;
 use Illuminate\Support\Facades\Log;
 use ClarionApp\Backend\EnvEditor;
 use ClarionApp\Backend\SupervisorManager;
+use Symfony\Component\Process\Process;
 
 class BlockchainManager
 {
+    private function validateBlockchainName(string $name): void
+    {
+        if (!preg_match('/^[a-zA-Z0-9][a-zA-Z0-9_-]{0,31}$/', $name)) {
+            throw new \InvalidArgumentException("Invalid blockchain name: $name");
+        }
+    }
+
     public function create($name)
     {
+        $this->validateBlockchainName($name);
+
+        $binaryPath = config('clarion.multichain_binary_path', '/usr/local/bin');
+        $datadir = config('clarion.multichain_datadir', '/var/www/.multichain');
+
         Log::info('Creating blockchain: ' . $name);
-        Log::info(shell_exec('/usr/local/bin/multichain-util -datadir=/var/www/.multichain create '.$name));
+        $process = new Process([$binaryPath . '/multichain-util', '-datadir=' . $datadir, 'create', $name]);
+        $process->setTimeout(60);
+        $process->run();
+        Log::info($process->getOutput());
+
         $this->config($name);
     }
 
     public function config($name)
     {
-        $confFile = "/var/www/.multichain/$name/multichain.conf";
-        $paramsFile = "/var/www/.multichain/$name/params.dat";
+        $this->validateBlockchainName($name);
+
+        $datadir = config('clarion.multichain_datadir', '/var/www/.multichain');
+        $binaryPath = config('clarion.multichain_binary_path', '/usr/local/bin');
+        $confFile = "$datadir/$name/multichain.conf";
+        $paramsFile = "$datadir/$name/params.dat";
 
         $conf = file_get_contents($confFile);
         $params = file_get_contents($paramsFile);
@@ -64,27 +85,39 @@ class BlockchainManager
 
         // Create supervisor config to run multichaind clarion
         $supervisor = new SupervisorManager();
-        $supervisor->createConfig($name."-multichain", "[program:$name-multichain]
-command=/usr/local/bin/multichaind -datadir=/var/www/.multichain $name
-autostart=true
-autorestart=true
-stderr_logfile=/var/www/multichain.error
-stdout_logfile=/var/www/multichain.log
-user=www-data
-");
+        $supervisor->createConfig($name."-multichain", [
+            'command' => "$binaryPath/multichaind -datadir=$datadir $name",
+            'autostart' => true,
+            'autorestart' => true,
+            'stderr_logfile' => '/var/www/multichain.error',
+            'stdout_logfile' => '/var/www/multichain.log',
+            'user' => 'www-data',
+        ]);
 
         $supervisor->reloadSupervisor();
     }
 
     public function exists($name)
     {
-        return file_exists("/var/www/.multichain/$name");
+        $this->validateBlockchainName($name);
+        $datadir = config('clarion.multichain_datadir', '/var/www/.multichain');
+        return file_exists("$datadir/$name");
     }
 
     public function requestJoin($url)
     {
+        if (!preg_match('#^https?://#i', $url)) {
+            throw new \InvalidArgumentException("Invalid URL scheme: $url");
+        }
+
+        $binaryPath = config('clarion.multichain_binary_path', '/usr/local/bin');
+        $datadir = config('clarion.multichain_datadir', '/var/www/.multichain');
+
         Log::info('Joining blockchain: ' . $url);
-        $results = shell_exec('/usr/local/bin/multichaind -datadir=/var/www/.multichain '.$url);
+        $process = new Process([$binaryPath . '/multichaind', '-datadir=' . $datadir, $url]);
+        $process->setTimeout(60);
+        $process->run();
+        $results = $process->getOutput();
         Log::info($results);
         $lines = explode("\n", $results);
         $parts = explode(' ', $lines[4]);

@@ -4,6 +4,7 @@ namespace ClarionApp\Backend\Commands;
 
 use Illuminate\Console\Command;
 use Artisan;
+use Symfony\Component\Process\Process;
 
 class SetupMariaDB extends Command
 {
@@ -30,11 +31,22 @@ class SetupMariaDB extends Command
 
         $db_password = uniqid();
 
-        exec("mysql -u root -e 'CREATE DATABASE clarion'");
-        $password_query = "GRANT ALL ON clarion.* TO 'clarion'@'localhost' IDENTIFIED BY '$db_password';";
-        $password_command = "mysql -u root -e \"$password_query\"";
-        print $password_command."\n";
-        exec($password_command);
+        $createDb = new Process(['mysql', '-u', 'root', '-e', 'CREATE DATABASE clarion']);
+        $createDb->setTimeout(60);
+        $createDb->run();
+        if (!$createDb->isSuccessful()) {
+            $this->error('Failed to create database: ' . $createDb->getErrorOutput());
+            return;
+        }
+
+        $password_query = "GRANT ALL ON clarion.* TO 'clarion'@'localhost' IDENTIFIED BY '$db_password'";
+        $grantPrivs = new Process(['mysql', '-u', 'root', '-e', $password_query]);
+        $grantPrivs->setTimeout(60);
+        $grantPrivs->run();
+        if (!$grantPrivs->isSuccessful()) {
+            $this->error('Failed to grant privileges: ' . $grantPrivs->getErrorOutput());
+            return;
+        }
 
         $env = file_get_contents(base_path(".env"));
         $lines = explode("\n", $env);
