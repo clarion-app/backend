@@ -47,12 +47,12 @@ class ClarionBackendServiceProvider extends ServiceProvider
         $this->callAfterResolving(\Illuminate\Contracts\Debug\ExceptionHandler::class, function ($handler) {
             if (method_exists($handler, 'renderable')) {
                 $handler->renderable(function (RouteNotFoundException $e, $request) {
-                    if ($request->is('api/*') && str_contains($e->getMessage(), 'login')) {
+                    if ($request->is('api/*', 'broadcasting/*') && str_contains($e->getMessage(), 'login')) {
                         return response()->json(['message' => 'Unauthenticated.'], 401);
                     }
                 });
                 $handler->renderable(function (AuthenticationException $e, $request) {
-                    if ($request->is('api/*')) {
+                    if ($request->is('api/*', 'broadcasting/*')) {
                         return response()->json(['message' => 'Unauthenticated.'], 401);
                     }
                 });
@@ -86,11 +86,11 @@ class ClarionBackendServiceProvider extends ServiceProvider
             'cors.supports_credentials' => true,
         ]);
 
-        // Add cookie + auth middleware to the api middleware group
-        $router = $this->app['router'];
-        $router->pushMiddlewareToGroup('api', \Illuminate\Cookie\Middleware\EncryptCookies::class);
-        $router->pushMiddlewareToGroup('api', \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class);
-        $router->pushMiddlewareToGroup('api', AuthCookieMiddleware::class);
+        // Add cookie + auth middleware globally so all routes (including sub-packages using auth:api directly) get cookie-to-Bearer translation
+        $kernel = $this->app[\Illuminate\Contracts\Http\Kernel::class];
+        $kernel->pushMiddleware(\Illuminate\Cookie\Middleware\EncryptCookies::class);
+        $kernel->pushMiddleware(\Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class);
+        $kernel->pushMiddleware(AuthCookieMiddleware::class);
 
         if(!$this->app->routesAreCached())
         {
