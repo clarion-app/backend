@@ -28,6 +28,11 @@ class UserController extends Controller
         return User::all();
     }
 
+    public function me(Request $request)
+    {
+        return response()->json(['user' => $request->user()]);
+    }
+
     public function store(Request $request)
     {
         $request->validate([
@@ -45,7 +50,8 @@ class UserController extends Controller
 
         $token = $user->createToken(Str::random(80))->accessToken;
 
-        return response()->json(['user'=>$user, 'token' => $token]);
+        return response()->json(['user' => $user])
+            ->cookie('clarion_token', $token, 60 * 24 * 7, '/', null, false, true, false, 'Lax');
     }
 
     public function show($id)
@@ -95,7 +101,8 @@ class UserController extends Controller
 
         $token = $user->createToken(Str::random(80))->accessToken;
 
-        return response()->json(['user'=>$user, 'token' => $token]);
+        return response()->json(['user' => $user])
+            ->cookie('clarion_token', $token, 60 * 24 * 7, '/', null, false, true, false, 'Lax');
     }
 }
 

@@ -12,6 +12,9 @@ use ClarionApp\Backend\Commands\TestAPI;
 use ClarionApp\Backend\Models\User;
 use ClarionApp\Backend\Controllers\UserController;
 use ClarionApp\Backend\Jobs\NodeDiscovery;
+use ClarionApp\Backend\Http\Middleware\AuthCookieMiddleware;
+use Illuminate\Auth\AuthenticationException;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Illuminate\Console\Scheduling\Schedule;
 use GuzzleHttp\Client as GuzzleClient;
 use Symfony\Component\Process\Process;
@@ -39,6 +42,22 @@ class ClarionBackendServiceProvider extends ServiceProvider
                 'allow_redirects' => ['max' => 5],
             ]);
         });
+
+        // Return 401 JSON for unauthenticated API requests instead of redirecting to login route
+        $this->callAfterResolving(\Illuminate\Contracts\Debug\ExceptionHandler::class, function ($handler) {
+            if (method_exists($handler, 'renderable')) {
+                $handler->renderable(function (RouteNotFoundException $e, $request) {
+                    if ($request->is('api/*') && str_contains($e->getMessage(), 'login')) {
+                        return response()->json(['message' => 'Unauthenticated.'], 401);
+                    }
+                });
+                $handler->renderable(function (AuthenticationException $e, $request) {
+                    if ($request->is('api/*')) {
+                        return response()->json(['message' => 'Unauthenticated.'], 401);
+                    }
+                });
+            }
+        });
     }
 
     /**
@@ -60,6 +79,18 @@ class ClarionBackendServiceProvider extends ServiceProvider
         $cors = config('cors.paths');
         $cors[] = 'docs/api.json';
         config(['cors.paths'=>$cors]);
+
+        // Configure CORS for cookie-based auth
+        config([
+            'cors.allowed_origins' => [env('FRONTEND_URL', 'http://localhost:9000')],
+            'cors.supports_credentials' => true,
+        ]);
+
+        // Add cookie + auth middleware to the api middleware group
+        $router = $this->app['router'];
+        $router->pushMiddlewareToGroup('api', \Illuminate\Cookie\Middleware\EncryptCookies::class);
+        $router->pushMiddlewareToGroup('api', \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class);
+        $router->pushMiddlewareToGroup('api', AuthCookieMiddleware::class);
 
         if(!$this->app->routesAreCached())
         {

@@ -46,7 +46,10 @@ Route::group(['prefix'=>'api/clarion/system', 'middleware'=>'api'], function () 
     Route::post('network/join', [SystemController::class, 'join']);
 });
 
-Route::group(['prefix'=>'api/clarion/system', 'middleware' => 'auth:api'], function () {
+Route::get('api/csrf-cookie', fn() => response()->noContent());
+
+Route::group(['prefix'=>'api/clarion/system', 'middleware' => ['api', 'auth:api']], function () {
+  Route::get('user/me', [UserController::class, 'me']);
   Route::post('composer/install', [ComposerController::class, 'install']);
   Route::post('composer/uninstall', [ComposerController::class, 'uninstall']);
 
