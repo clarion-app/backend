@@ -1,6 +1,7 @@
 <?php
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Broadcast;
 use ClarionApp\Backend\Controllers\ComposerController;
 use ClarionApp\Backend\Controllers\AppController;
 use ClarionApp\Backend\Controllers\UserController;
@@ -77,4 +78,8 @@ Route::group(['prefix'=>'api/docs', 'middleware'=>'api'], function () {
     $packages = ClarionApp\Backend\ApiManager::getPackageDescriptions();
     return response()->json($packages);
   });
+});
+
+Broadcast::channel('User.{id}', function ($user, $id) {
+    return $user->id === $id;
 });
