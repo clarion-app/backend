@@ -6,6 +6,8 @@ use ClarionApp\Backend\Services\DocumentationService;
 
 class ApiManager
 {
+    private static ?array $apiDocsCache = null;
+
     /**
      * Get all package descriptions
      */
@@ -70,14 +72,17 @@ class ApiManager
      **/   
     public static function getOperationDetails(string $operationId)
     {
-        $docService = new DocumentationService();
-        $api = $docService->getApiDocs();
+        if (self::$apiDocsCache === null) {
+            $docService = new DocumentationService();
+            self::$apiDocsCache = $docService->getApiDocs();
+        }
+        $api = self::$apiDocsCache;
 
         foreach($api['paths'] as $path=>$pathDetails)
         {
             foreach($pathDetails as $method=>$details)
             {
-                if($details['operationId'] == $operationId)
+                if(isset($details['operationId']) && $details['operationId'] == $operationId)
                 {
                     return [
                         "path" => $path,
