@@ -13,6 +13,7 @@ use ClarionApp\Backend\Models\User;
 use ClarionApp\Backend\Controllers\UserController;
 use ClarionApp\Backend\Jobs\NodeDiscovery;
 use ClarionApp\Backend\Http\Middleware\AuthCookieMiddleware;
+use ClarionApp\Backend\Services\NotificationDispatcher;
 use Illuminate\Auth\AuthenticationException;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Illuminate\Console\Scheduling\Schedule;
@@ -41,6 +42,10 @@ class ClarionBackendServiceProvider extends ServiceProvider
                 'timeout' => 15,
                 'allow_redirects' => ['max' => 5],
             ]);
+        });
+
+        $this->app->singleton(NotificationDispatcher::class, function () {
+            return new NotificationDispatcher();
         });
 
         // Return 401 JSON for unauthenticated API requests instead of redirecting to login route
