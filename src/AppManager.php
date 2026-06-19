@@ -8,6 +8,8 @@ use ClarionApp\Backend\Models\AppPackage;
 use ClarionApp\Backend\Models\NpmPackage;
 use ClarionApp\Backend\Events\InstallNPMPackageEvent;
 use ClarionApp\Backend\Events\UninstallNPMPackageEvent;
+use ClarionApp\Backend\Events\InstallComposerPackageEvent;
+use ClarionApp\Backend\Events\UninstallComposerPackageEvent;
 use Symfony\Component\Process\Process;
 use GuzzleHttp\Client as GuzzleClient;
 
@@ -161,6 +163,9 @@ class AppManager
 
         Log::info($output);
         $this->updateComposerPackageTable($package, $app_id);
+
+        event(new InstallComposerPackageEvent($package));
+
         return $output;
     }
 
@@ -189,6 +194,9 @@ class AppManager
         [$org, $name] = explode('/', $package);
         $composerPackage = ComposerPackage::where('organization', $org)->where('name', $name)->first();
         $composerPackage->delete();
+
+        event(new UninstallComposerPackageEvent($package));
+
         return $output;
     }
 
