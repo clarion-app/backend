@@ -8,6 +8,7 @@ use ClarionApp\Backend\Models\User;
 use ClarionApp\Backend\Models\LocalNode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class UserController extends Controller
@@ -96,12 +97,24 @@ class UserController extends Controller
 
         $user = User::where('email', $request->email)->first();
         if (!$user || !Hash::check($request->password, $user->password)) {
+            Log::channel('stack')->warning('Passport login failed', [
+                'email'     => $request->email,
+                'ip'        => $request->ip(),
+                'reason'    => $user ? 'invalid_password' : 'user_not_found',
+                'timestamp' => now()->toISOString(),
+            ]);
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
         $token = $user->createToken(Str::random(80))->accessToken;
 
-        return response()->json(['user' => $user])
+        Log::channel('stack')->info('Passport login success', [
+            'user_id'   => $user->id,
+            'ip'        => $request->ip(),
+            'timestamp' => now()->toISOString(),
+        ]);
+
+        return response()->json(['user' => $user, 'token' => $token])
             ->cookie('clarion_token', $token, 60 * 24 * 7, '/', null, false, true, false, 'Lax');
     }
 }

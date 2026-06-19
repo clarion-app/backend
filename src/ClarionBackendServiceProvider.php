@@ -86,8 +86,13 @@ class ClarionBackendServiceProvider extends ServiceProvider
         config(['cors.paths'=>$cors]);
 
         // Configure CORS for cookie-based auth
+        $allowedOrigins = [env('FRONTEND_URL', 'http://localhost:9000')];
+        $extensionOrigin = env('EXTENSION_ORIGIN');
+        if ($extensionOrigin) {
+            $allowedOrigins[] = $extensionOrigin;
+        }
         config([
-            'cors.allowed_origins' => [env('FRONTEND_URL', 'http://localhost:9000')],
+            'cors.allowed_origins' => $allowedOrigins,
             'cors.supports_credentials' => true,
         ]);
 

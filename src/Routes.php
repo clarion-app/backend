@@ -2,6 +2,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Broadcast;
+use Illuminate\Support\Facades\Log;
 use ClarionApp\Backend\Controllers\ComposerController;
 use ClarionApp\Backend\Controllers\AppController;
 use ClarionApp\Backend\Controllers\UserController;
@@ -81,5 +82,21 @@ Route::group(['prefix'=>'api/docs', 'middleware'=>'api'], function () {
 });
 
 Broadcast::channel('User.{id}', function ($user, $id) {
-    return $user->id === $id;
+    $authorized = (int) $user->id === (int) $id;
+
+    if ($authorized) {
+        Log::channel('stack')->info('WebSocket channel auth success', [
+            'user_id'   => $user->id,
+            'channel'   => "User.{$id}",
+            'timestamp' => now()->toISOString(),
+        ]);
+    } else {
+        Log::channel('stack')->warning('WebSocket channel auth failure', [
+            'user_id'            => $user->id,
+            'requested_channel'  => "User.{$id}",
+            'timestamp'          => now()->toISOString(),
+        ]);
+    }
+
+    return $authorized;
 });
