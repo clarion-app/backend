@@ -250,7 +250,7 @@
             "dist": {
                 "type": "path",
                 "url": "../llm-client",
-                "reference": "dd09d27e1a62c53efbe11365c53258ffed958e0e"
+                "reference": "e7419f86bfc530a3454d8c56609beaeca191fc64"
             },
             "require": {
                 "clarion-app/backend": "dev-main",
