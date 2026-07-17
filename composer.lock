@@ -250,7 +250,7 @@
             "dist": {
                 "type": "path",
                 "url": "../llm-client",
-                "reference": "e7419f86bfc530a3454d8c56609beaeca191fc64"
+                "reference": "8bd4beeba8ec95e77aafe7519d56cbeafe13a888"
             },
             "require": {
                 "clarion-app/backend": "dev-main",
@@ -261,7 +261,8 @@
             },
             "require-dev": {
                 "orchestra/testbench": "^9.0",
-                "phpunit/phpunit": "^11.0"
+                "phpunit/phpunit": "^11.0",
+                "symfony/process": "^7.0"
             },
             "type": "library",
             "extra": {
