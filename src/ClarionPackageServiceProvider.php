@@ -23,11 +23,18 @@ abstract class ClarionPackageServiceProvider extends ServiceProvider
         $packageRoot = dirname($reflection->getFileName(), 2);
         $composerPath = $packageRoot . '/composer.json';
 
-        if (!file_exists($composerPath)) return;
+        if (!file_exists($composerPath))
+        {
+            throw new \Exception("composer.json not found in package root: $packageRoot");
+        }
 
         $composerInfo = json_decode(file_get_contents($composerPath), true);
         $clarion = $composerInfo['extra']['clarion'] ?? false;
-        if (!$clarion) return;
+        if (!$clarion)
+        {
+            throw new \Exception("Missing 'extra.clarion' section in composer.json for package: $packageRoot");
+        }
+
         $this->packageName = $clarion['app-name'];
         $description = $clarion['description'];
         $this->routePrefix = 'api/' . str_replace("@", "", $this->packageName);
