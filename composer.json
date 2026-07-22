@@ -2,6 +2,9 @@
     "name": "clarion-app/backend",
     "type": "library",
     "license": "MIT",
+    "scripts": {
+        "test": "vendor/bin/phpunit"
+    },
     "autoload": {
         "psr-4": {
             "ClarionApp\\Backend\\": "src/"

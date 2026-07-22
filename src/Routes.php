@@ -82,7 +82,7 @@ Route::group(['prefix'=>'api/docs', 'middleware'=>'api'], function () {
 });
 
 Broadcast::channel('User.{id}', function ($user, $id) {
-    $authorized = (int) $user->id === (int) $id;
+    $authorized = hash_equals((string) $user->id, (string) $id);
 
     if ($authorized) {
         Log::channel('stack')->info('WebSocket channel auth success', [
